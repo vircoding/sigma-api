@@ -1,2 +1,5 @@
 # Avoid dependencies folder
 node_modules
+
+# Avoid environment variables
+.env
