@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import { generateToken } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -25,11 +26,18 @@ export const login = async (req, res) => {
     const passwordVal = await user.comparePassword(password);
     if (!passwordVal) return res.status(403).json({ error: "Wrong Password" });
 
-    res.json({
-      id: user.id,
-      email: user.email,
-      password: user.password,
-    });
+    // jwt
+    res.json(generateToken(user.id));
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const infoUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.uid).lean();
+    return res.json({ username: user.username, email: user.email, uid: user.id });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
