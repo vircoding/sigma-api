@@ -1,5 +1,5 @@
 import { User } from "../models/User.js";
-import { generateToken } from "../utils/tokenManager.js";
+import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -26,8 +26,10 @@ export const login = async (req, res) => {
     const passwordVal = await user.comparePassword(password);
     if (!passwordVal) return res.status(403).json({ error: "Wrong Password" });
 
-    // jwt
-    res.json(generateToken(user.id));
+    const { token, expiresIn } = generateToken(user.id);
+    generateRefreshToken(user.id, res);
+
+    return res.json({ token, expiresIn });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
