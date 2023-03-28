@@ -1,5 +1,6 @@
 import { User } from "../models/User.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
+import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -43,5 +44,31 @@ export const infoUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const refresh = (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) throw new Error("no token");
+
+    const { uid } = jwt.verify(refreshToken, process.env.JWT_REFRESH);
+    const { token, expiresIn } = generateToken(uid);
+
+    return res.json({ token, expiresIn });
+  } catch (error) {
+    const tokenVerificationErrors = {
+      "no token": "There's no token",
+      "no bearer": "Non-valid token format, please use Bearer",
+      "invalid signature": "Non-valid jwt sign",
+      "jwt expired": "JWT expired",
+      "jwt malformed": "Non-valid JWT format",
+      "invalid token": "Non-valid token",
+      "invalid algorithm": "Non-valid algorithm",
+    };
+
+    if (!tokenVerificationErrors[error.message])
+      return res.status(401).json({ error: "Non-documentated error" });
+    return res.status(401).json({ error: tokenVerificationErrors[error.message] });
   }
 };

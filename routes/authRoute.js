@@ -35,4 +35,6 @@ router.post(
 // Just for testing purposes
 router.get("/protected", requireToken, infoUser);
 
+router.get("/refresh", refresh);
+
 export default router;
