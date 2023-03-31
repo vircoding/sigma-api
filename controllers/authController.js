@@ -70,3 +70,8 @@ export const refresh = (req, res) => {
     return res.status(401).json({ error: tokenVerificationErrors[error.message] });
   }
 };
+
+export const logout = (req, res) => {
+  res.clearCookie("refreshToken");
+  res.json({ ok: true });
+};

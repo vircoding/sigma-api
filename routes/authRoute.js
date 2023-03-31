@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, login, infoUser, refresh } from "../controllers/authController.js";
+import { register, login, infoUser, refresh, logout } from "../controllers/authController.js";
 import { body } from "express-validator";
 import { valResults } from "../middlewares/valResults.js";
 import { requireToken } from "../middlewares/requireToken.js";
@@ -32,9 +32,10 @@ router.post(
   login
 );
 
+router.get("/refresh", refresh);
+router.get("/logout", logout);
+
 // Just for testing purposes
 router.get("/protected", requireToken, infoUser);
-
-router.get("/refresh", refresh);
 
 export default router;
