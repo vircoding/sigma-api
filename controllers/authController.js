@@ -54,12 +54,10 @@ export const refresh = (req, res) => {
 
     const { uid } = jwt.verify(refreshToken, process.env.JWT_REFRESH);
     const { token, expiresIn } = generateToken(uid);
-
     return res.json({ token, expiresIn });
   } catch (error) {
     const tokenVerificationErrors = {
       "no token": "There's no token",
-      "no bearer": "Non-valid token format, please use Bearer",
       "invalid signature": "Non-valid jwt sign",
       "jwt expired": "JWT expired",
       "jwt malformed": "Non-valid JWT format",
