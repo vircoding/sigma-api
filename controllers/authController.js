@@ -49,25 +49,11 @@ export const infoUser = async (req, res) => {
 
 export const refresh = (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) throw new Error("no token");
-
-    const { uid } = jwt.verify(refreshToken, process.env.JWT_REFRESH);
-    const { token, expiresIn } = generateToken(uid);
+    const { token, expiresIn } = generateToken(req.uid);
     return res.json({ token, expiresIn });
   } catch (error) {
-    const tokenVerificationErrors = {
-      "no token": "There's no token",
-      "invalid signature": "Non-valid jwt sign",
-      "jwt expired": "JWT expired",
-      "jwt malformed": "Non-valid JWT format",
-      "invalid token": "Non-valid token",
-      "invalid algorithm": "Non-valid algorithm",
-    };
-
-    if (!tokenVerificationErrors[error.message])
-      return res.status(401).json({ error: "Non-documentated error" });
-    return res.status(401).json({ error: tokenVerificationErrors[error.message] });
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
   }
 };
 

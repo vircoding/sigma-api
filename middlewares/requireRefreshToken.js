@@ -1,17 +1,13 @@
 import jwt from "jsonwebtoken";
 import { tokenVerificationErrors } from "../utils/tokenManager.js";
 
-export const requireToken = (req, res, next) => {
+export const requireRefreshToken = (req, res, next) => {
   try {
-    let token = req.headers?.authorization;
-    if (!token) throw new Error("no token");
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) throw new Error("no token");
 
-    token = token.split(" ")[1];
-    if (!token) throw new Error("no bearer");
-
-    const { uid } = jwt.verify(token, process.env.JWT_SECRET);
+    const { uid } = jwt.verify(refreshToken, process.env.JWT_REFRESH);
     req.uid = uid;
-
     next();
   } catch (error) {
     if (!tokenVerificationErrors[error.message])
