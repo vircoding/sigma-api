@@ -24,3 +24,11 @@ export const loginValidator = [
   body("password", "Invalid Password").trim().isLength({ min: 6, max: 12 }),
   valResuls,
 ];
+
+// Just for testing purposes
+// TODO: Replace;
+export const postValidator = [
+  body("buy", "Invalid Buy/Rent Spec").trim().isBoolean(),
+  body("price", "Invalid Price").trim().notEmpty().isNumeric(),
+  valResuls,
+];
