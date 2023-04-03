@@ -10,6 +10,20 @@ export const getPosts = async (req, res) => {
   }
 };
 
+export const getPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ error: "Post not founded" });
+
+    return res.json({ post });
+  } catch (error) {
+    if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
 export const setPost = async (req, res) => {
   try {
     const { buy, price } = req.body;
