@@ -41,10 +41,9 @@ export const removePost = async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
 
-    if (!post) return res.status(404).json({ error: "No existe el post" });
+    if (!post) return res.status(404).json({ error: "Post not founded" });
 
-    if (!post.uid.equals(req.uid))
-      return res.status(401).json({ error: "No le pertenece ese id 🤡" });
+    if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
 
     await post.deleteOne();
 

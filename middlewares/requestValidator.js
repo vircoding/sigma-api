@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body, validationResult, param } from "express-validator";
 
 const valResuls = (req, res, next) => {
   const errors = validationResult(req);
@@ -22,6 +22,11 @@ export const registerValidator = [
 export const loginValidator = [
   body("email", "Invalid Email").trim().isEmail().normalizeEmail(),
   body("password", "Invalid Password").trim().isLength({ min: 6, max: 12 }),
+  valResuls,
+];
+
+export const paramValidator = [
+  param("id", "Invalid ID Format").trim().notEmpty().escape(),
   valResuls,
 ];
 
