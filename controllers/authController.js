@@ -6,7 +6,11 @@ export const register = async (req, res) => {
   try {
     const user = new User({ email, password });
     await user.save();
-    return res.status(201).json({ ok: true });
+
+    const { token, expiresIn } = generateToken(user.id);
+    generateRefreshToken(user.id, res);
+
+    return res.status(201).json({ token, expiresIn });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ error: "User exists already" });
