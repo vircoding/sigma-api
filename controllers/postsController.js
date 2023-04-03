@@ -16,7 +16,7 @@ export const setPost = async (req, res) => {
     const post = new Post({ buy, price, uid: req.uid });
     const newPost = await post.save();
 
-    return res.json(newPost);
+    return res.status(201).json(newPost);
   } catch (error) {
     return res.status(500).json({ error: "Server error" });
   }
