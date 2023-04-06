@@ -19,6 +19,7 @@ app.use(
       }
       return callback("CORS Origin Error: " + origin);
     },
+    credentials: true,
   })
 );
 app.use(express.json());
