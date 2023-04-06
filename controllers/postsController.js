@@ -53,3 +53,24 @@ export const removePost = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { buy, price } = req.body;
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ error: "Post not founded" });
+
+    if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
+
+    post.buy = buy;
+    post.price = price;
+    post.save();
+
+    return res.json({ post });
+  } catch (error) {
+    if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
+    return res.status(500).json({ error: "Server error" });
+  }
+};
