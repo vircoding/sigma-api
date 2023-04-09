@@ -29,6 +29,4 @@ app.use("/api/v1/posts", postsRouter);
 
 // Starting Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server started on http://localhost:${PORT}; press Ctrl-C to terminate.`)
-);
+app.listen(PORT, () => console.log(`Server http://localhost:${PORT};`));
