@@ -2,9 +2,23 @@ import { User } from "../models/User.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
   try {
-    const user = new User({ email, password });
+    const user = new User({
+      username,
+      email,
+      password,
+      connections: [
+        {
+          date: new Date(),
+          ip: req.ip,
+          browser: req.headers["user-agent"],
+          device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+            ? "Mobile"
+            : "Desktop",
+        },
+      ],
+    });
     await user.save();
 
     const { token, expiresIn } = generateToken(user.id);
@@ -53,7 +67,12 @@ export const refresh = (req, res) => {
 export const user = async (req, res) => {
   try {
     const user = await User.findById(req.uid).lean();
-    return res.json({ username: user.username, email: user.email, uid: user.id });
+    return res.json({
+      username: user.username,
+      email: user.email,
+      uid: user._id,
+      connections: user.connections,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });

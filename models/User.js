@@ -21,6 +21,29 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  connections: {
+    type: [
+      {
+        date: {
+          type: Date,
+          required: true,
+        },
+        ip: {
+          type: String,
+          required: true,
+        },
+        browser: {
+          type: String,
+          required: true,
+        },
+        device: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    required: true,
+  },
 });
 
 userSchema.pre("save", async function (next) {
