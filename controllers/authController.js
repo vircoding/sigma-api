@@ -40,20 +40,20 @@ export const login = async (req, res) => {
   }
 };
 
-export const infoUser = async (req, res) => {
+export const refresh = (req, res) => {
   try {
-    const user = await User.findById(req.uid).lean();
-    return res.json({ username: user.username, email: user.email, uid: user.id });
+    const { token, expiresIn } = generateToken(req.uid);
+    return res.json({ token, expiresIn });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
 
-export const refresh = (req, res) => {
+export const user = async (req, res) => {
   try {
-    const { token, expiresIn } = generateToken(req.uid);
-    return res.json({ token, expiresIn });
+    const user = await User.findById(req.uid).lean();
+    return res.json({ username: user.username, email: user.email, uid: user.id });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
