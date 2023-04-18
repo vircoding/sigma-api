@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema({
     ],
     required: true,
   },
+  visits: {
+    type: Number,
+    required: true,
+    default: 1,
+  },
 });
 
 userSchema.pre("save", async function (next) {

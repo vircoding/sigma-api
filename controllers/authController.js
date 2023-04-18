@@ -47,6 +47,22 @@ export const login = async (req, res) => {
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
 
+    user.visits = user.connections.push({
+      date: new Date(),
+      ip: req.ip,
+      browser: req.headers["user-agent"],
+      device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+        ? "Mobile"
+        : "Desktop",
+    });
+
+    if (user.visits > 50) {
+      user.connections.shift();
+      user.visits = user.connections.length;
+    }
+
+    await user.save();
+
     return res.json({ token, expiresIn });
   } catch (error) {
     console.log(error);
@@ -80,7 +96,6 @@ export const user = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  console.log(req.cookies.refreshToken);
   res.clearCookie("refreshToken");
   res.json({ ok: true });
 };

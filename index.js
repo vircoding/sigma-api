@@ -13,12 +13,7 @@ const whiteList = [process.env.ORIGIN];
 // Middlewares
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (whiteList.includes(origin)) {
-        return callback(null, origin);
-      }
-      return callback("CORS Origin Error: " + origin);
-    },
+    origin: process.env.ORIGIN,
     credentials: true,
   })
 );
