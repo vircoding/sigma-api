@@ -23,5 +23,11 @@ export const Agent = User.discriminator(
       type: String,
       trim: true,
     },
+    public_email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
   })
 );

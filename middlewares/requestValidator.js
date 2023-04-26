@@ -7,7 +7,7 @@ const valResuls = (req, res, next) => {
   next();
 };
 
-export const registerValidator = [
+export const clientValidator = [
   body("email", "Invalid Email").trim().isEmail().normalizeEmail(),
   body("password", "Invalid Password").trim().isLength({ min: 6, max: 16 }),
   body("password").custom((value, { req }) => {
@@ -29,11 +29,11 @@ export const agentValidator = [
     }
     return value;
   }),
-  body("username", "Invalid Username").trim().isLength({ min: 3, max: 20 }),
   body("firstname", "Invalid First Name").trim().isAlpha().isLength({ min: 1, max: 20 }),
   body("lastname", "Invalid First Name").trim().isAlpha().isLength({ min: 1, max: 20 }),
   body("phone", "Invalid Phone Number").trim().isMobilePhone().isLength({ min: 10, max: 15 }),
   body("bio", "Invalid Bio").trim().isLength({ max: 160 }),
+  body("public_email", "Invalid Public Email").trim().isEmail().normalizeEmail(),
   valResuls,
 ];
 

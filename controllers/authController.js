@@ -1,12 +1,12 @@
 import { User } from "../models/User.js";
+import { Client } from "../models/Client.js";
 import { Agent } from "../models/Agent.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
 
-export const register = async (req, res) => {
-  const { username, email, password } = req.body;
+export const registerClient = async (req, res) => {
+  const { email, password, username } = req.body;
   try {
-    const user = new User({
-      username,
+    const client = new Client({
       email,
       password,
       connections: [
@@ -19,11 +19,12 @@ export const register = async (req, res) => {
             : "Desktop",
         },
       ],
+      username,
     });
-    await user.save();
+    await client.save();
 
-    const { token, expiresIn } = generateToken(user.id);
-    generateRefreshToken(user.id, res);
+    const { token, expiresIn } = generateToken(client.id);
+    generateRefreshToken(client.id, res);
 
     return res.status(201).json({ token, expiresIn });
   } catch (error) {
@@ -35,11 +36,10 @@ export const register = async (req, res) => {
   }
 };
 
-export const agent = async (req, res) => {
-  const { username, email, password, firstname, lastname, phone, bio } = req.body;
+export const registerAgent = async (req, res) => {
+  const { email, password, firstname, lastname, phone, bio, public_email } = req.body;
   try {
     const agent = new Agent({
-      username,
       email,
       password,
       connections: [
@@ -56,6 +56,7 @@ export const agent = async (req, res) => {
       lastname,
       phone,
       bio,
+      public_email,
     });
     await agent.save();
 
@@ -121,12 +122,20 @@ export const refresh = (req, res) => {
 export const user = async (req, res) => {
   try {
     const user = await User.findById(req.uid).lean();
-    return res.json({
-      username: user.username,
-      email: user.email,
-      uid: user._id,
-      connections: user.connections,
-    });
+    if (user.__t === "client") {
+      return res.json({
+        username: user.username,
+      });
+    } else if (user.__t === "agent") {
+      return res.json({
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phone: user.phone,
+        bio: user.bio,
+        public_email: user.public_email,
+      });
+    }
+    return res.json({ ok: true });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
