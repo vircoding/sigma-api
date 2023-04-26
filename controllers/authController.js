@@ -27,7 +27,7 @@ export const register = async (req, res) => {
     return res.status(201).json({ token, expiresIn });
   } catch (error) {
     if (error.code === 11000) {
-      return res.status(400).json({ error: "User exists already" });
+      return res.status(403).json({ error: "User exists already" });
     }
     console.log(error);
     return res.status(500).json({ error: "Server error" });
@@ -39,10 +39,10 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(403).json({ error: "User doesn't exist already" });
+    if (!user) return res.status(403).json({ error: "Invalid Credentials" });
 
     const passwordVal = await user.comparePassword(password);
-    if (!passwordVal) return res.status(403).json({ error: "Wrong Password" });
+    if (!passwordVal) return res.status(403).json({ error: "Invalid Credentials" });
 
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
@@ -96,6 +96,10 @@ export const user = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("refreshToken");
-  res.json({ ok: true });
+  try {
+    res.clearCookie("refreshToken");
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
 };

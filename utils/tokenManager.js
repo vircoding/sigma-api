@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const generateToken = (uid) => {
-  const expiresIn = 60 * 15;
+  const expiresIn = 60 * 15; // 15 Minutes
 
   try {
     const token = jwt.sign({ uid }, process.env.JWT_SECRET, { expiresIn });
@@ -12,7 +12,7 @@ export const generateToken = (uid) => {
 };
 
 export const generateRefreshToken = (uid, res) => {
-  const expiresIn = 60 * 60 * 24 * 30;
+  const expiresIn = 60 * 60 * 24 * 30; // 30 Days
   try {
     const refreshToken = jwt.sign({ uid }, process.env.JWT_REFRESH, { expiresIn });
     res.cookie("refreshToken", refreshToken, {
