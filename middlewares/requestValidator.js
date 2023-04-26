@@ -20,6 +20,23 @@ export const registerValidator = [
   valResuls,
 ];
 
+export const agentValidator = [
+  body("email", "Invalid Email").trim().isEmail().normalizeEmail(),
+  body("password", "Invalid Password").trim().isLength({ min: 6, max: 16 }),
+  body("password").custom((value, { req }) => {
+    if (value !== req.body.repassword) {
+      throw new Error("No Matched Passwords");
+    }
+    return value;
+  }),
+  body("username", "Invalid Username").trim().isLength({ min: 3, max: 20 }),
+  body("firstname", "Invalid First Name").trim().isAlpha().isLength({ min: 1, max: 20 }),
+  body("lastname", "Invalid First Name").trim().isAlpha().isLength({ min: 1, max: 20 }),
+  body("phone", "Invalid Phone Number").trim().isMobilePhone().isLength({ min: 10, max: 15 }),
+  body("bio", "Invalid Bio").trim().isLength({ max: 160 }),
+  valResuls,
+];
+
 export const loginValidator = [
   body("email", "Invalid Email").trim().isEmail().normalizeEmail(),
   body("password", "Invalid Password").trim().isLength({ min: 6, max: 16 }),

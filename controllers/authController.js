@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import { Agent } from "../models/Agent.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
 
 export const register = async (req, res) => {
@@ -23,6 +24,43 @@ export const register = async (req, res) => {
 
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
+
+    return res.status(201).json({ token, expiresIn });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(403).json({ error: "User exists already" });
+    }
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const agent = async (req, res) => {
+  const { username, email, password, firstname, lastname, phone, bio } = req.body;
+  try {
+    const agent = new Agent({
+      username,
+      email,
+      password,
+      connections: [
+        {
+          date: new Date(),
+          ip: req.ip,
+          browser: req.headers["user-agent"],
+          device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+            ? "Mobile"
+            : "Desktop",
+        },
+      ],
+      firstname,
+      lastname,
+      phone,
+      bio,
+    });
+    await agent.save();
+
+    const { token, expiresIn } = generateToken(agent.id);
+    generateRefreshToken(agent.id, res);
 
     return res.status(201).json({ token, expiresIn });
   } catch (error) {
