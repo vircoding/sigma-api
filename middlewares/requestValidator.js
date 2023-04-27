@@ -48,8 +48,6 @@ export const paramValidator = [
   valResuls,
 ];
 
-// Just for testing purposes
-// TODO: Replace;
 export const postValidator = [
   body("buy", "Invalid Buy/Rent Spec").trim().isBoolean(),
   body("price", "Invalid Price").trim().notEmpty().isNumeric(),

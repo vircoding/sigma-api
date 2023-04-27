@@ -1,4 +1,4 @@
-export const tokenVerificationErrors = {
+export const provinceList = {
   "Pinar del Rio": [
     "Sandino",
     "Mantua",
