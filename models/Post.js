@@ -8,13 +8,17 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
+  type: {
+    type: String,
+    required: true,
+  },
   address: {
     type: {
-      municipality: {
+      province: {
         type: String,
         required: true,
       },
-      province: {
+      municipality: {
         type: String,
         required: true,
       },
@@ -26,34 +30,42 @@ const postSchema = new Schema({
       living_room: {
         type: Number,
         required: true,
+        default: 0,
       },
       bed_room: {
         type: Number,
         required: true,
+        default: 0,
       },
       bath_room: {
         type: Number,
         required: true,
+        default: 0,
       },
-      dining_room: {
+      dinning_room: {
         type: Number,
         required: true,
+        default: 0,
       },
       kitchen: {
         type: Number,
         required: true,
+        default: 0,
       },
       garage: {
         type: Number,
         required: true,
+        default: 0,
       },
       garden: {
         type: Number,
         required: true,
+        default: 0,
       },
       pool: {
         type: Number,
         required: true,
+        default: 0,
       },
     },
     required: true,
@@ -64,6 +76,7 @@ const postSchema = new Schema({
   },
   description: {
     type: String,
+    trim: true,
   },
   date: {
     type: Date,

@@ -26,12 +26,36 @@ export const getPost = async (req, res) => {
 
 export const setPost = async (req, res) => {
   try {
-    const { buy, price } = req.body;
-    const post = new Post({ buy, price, uid: req.uid });
+    const post = new Post({
+      uid: req.uid,
+      type: req.body.type,
+      address: {
+        province: req.body.province,
+        municipality: req.body.municipality,
+      },
+      features: {
+        living_room: req.body.living_room,
+        bed_room: req.body.bed_room,
+        bath_room: req.body.bath_room,
+        dinning_room: req.body.dinning_room,
+        kitchen: req.body.kitchen,
+        garage: req.body.garage,
+        garden: req.body.garden,
+        pool: req.body.pool,
+      },
+      contact: req.body.contact,
+      description: req.body.description,
+      price: req.body.price,
+      date: new Date(),
+      visits: [],
+      visits_count: 0,
+    });
+    console.log("here");
     const newPost = await post.save();
 
     return res.status(201).json(newPost);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
