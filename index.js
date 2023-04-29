@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import authRouter from "./routes/authRoute.js";
 import postsRouter from "./routes/postsRoute.js";
+import countriesRouter from "./routes/countriesRoute.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
+app.use("/api/v1/countries", countriesRouter);
 
 // Starting Server
 const PORT = process.env.PORT || 5000;
