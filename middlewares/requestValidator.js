@@ -1,12 +1,17 @@
+import parsePhoneNumber from "libphonenumber-js";
 import { body, validationResult, param } from "express-validator";
 import { provinceList } from "../utils/provinceList.js";
 
-const valResuls = (req, res, next) => {
+const valResults = (req, res, next) => {
   const errors = validationResult(req);
 
-  if (!errors.isEmpty()) return res.status(400).json({ error: errors.array() });
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array() });
+  }
   next();
 };
+
+const phoneNumberRegex = /^\+\d+$/;
 
 export const clientValidator = [
   body("email", "Invalid Email").trim().isEmail().normalizeEmail(),
@@ -17,8 +22,11 @@ export const clientValidator = [
     }
     return value;
   }),
-  body("username", "Invalid Username").trim().isLength({ min: 3, max: 20 }),
-  valResuls,
+  body("username", "Invalid Username")
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ min: 3, max: 20 }),
+  valResults,
 ];
 
 export const agentValidator = [
@@ -30,23 +38,34 @@ export const agentValidator = [
     }
     return value;
   }),
-  body("firstname", "Invalid First Name").trim().isAlpha().isLength({ min: 1, max: 20 }),
-  body("lastname", "Invalid First Name").trim().isAlpha().isLength({ min: 1, max: 20 }),
-  body("phone", "Invalid Phone Number").trim().isMobilePhone().isLength({ min: 10, max: 15 }),
-  body("bio", "Invalid Bio").trim().isLength({ max: 160 }),
+  body("firstname", "Invalid First Name")
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ min: 1, max: 30 }),
+  body("lastname", "Invalid Last Name")
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ min: 1, max: 30 }),
+  body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
+  body("phone").custom((value) => {
+    const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'
+    if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
+    return value;
+  }),
+  body("bio", "Invalid Bio").trim().isAlpha("es-ES", { ignore: " " }).isLength({ max: 160 }),
   body("public_email", "Invalid Public Email").trim().isEmail().normalizeEmail(),
-  valResuls,
+  valResults,
 ];
 
 export const loginValidator = [
   body("email", "Invalid Email").trim().isEmail().normalizeEmail(),
   body("password", "Invalid Password").trim().isLength({ min: 6, max: 16 }),
-  valResuls,
+  valResults,
 ];
 
 export const paramValidator = [
   param("id", "Invalid ID Format").trim().notEmpty().escape(),
-  valResuls,
+  valResults,
 ];
 
 export const postValidator = [
@@ -80,5 +99,5 @@ export const postValidator = [
   body("contact", "Invalid Contact").trim().isMobilePhone().isLength({ min: 10, max: 15 }),
   body("description", "Invalid Description").trim().isLength({ max: 160 }),
   body("price", "Invalid Price").isNumeric(),
-  valResuls,
+  valResults,
 ];
