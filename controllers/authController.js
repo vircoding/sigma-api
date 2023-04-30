@@ -144,7 +144,13 @@ export const user = async (req, res) => {
 
 export const logout = (req, res) => {
   try {
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      domain: "sigma-api-ehki.onrender.com",
+      path: "/",
+    });
     res.json({ ok: true });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
