@@ -19,6 +19,8 @@ export const generateRefreshToken = (uid, res) => {
       httpOnly: true,
       secure: !(process.env.MODE === "developer"),
       expires: new Date(Date.now() + expiresIn * 1000),
+      domain: "https://sigma-api-ehki.onrender.com",
+      path: "/",
     });
   } catch (error) {
     console.log(error);
