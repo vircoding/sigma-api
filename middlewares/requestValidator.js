@@ -52,8 +52,16 @@ export const agentValidator = [
     if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
     return value;
   }),
-  body("bio", "Invalid Bio").trim().isAlpha("es-ES", { ignore: " " }).isLength({ max: 160 }),
-  body("public_email", "Invalid Public Email").trim().isEmail().normalizeEmail(),
+  body("bio", "Invalid Bio")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ max: 160 }),
+  body("public_email", "Invalid Public Email")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isEmail()
+    .normalizeEmail(),
   valResults,
 ];
 
