@@ -9,7 +9,7 @@ import countriesRouter from "./routes/countriesRoute.js";
 
 const app = express();
 
-const whiteList = [process.env.ORIGIN];
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
 
 // Middlewares
 app.use(
