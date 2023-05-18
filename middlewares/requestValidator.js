@@ -95,17 +95,39 @@ export const postValidator = [
     }
     return value;
   }),
-  body("living_room", "Invalid Living_Room").isNumeric(),
-  body("bed_room", "Invalid Bed_Room").isNumeric(),
-  body("bath_room", "Invalid Bath_Room").isNumeric(),
-  body("dinning_room", "Invalid Dinning_Room").isNumeric(),
-  body("kitchen", "Invalid Kitchen").isNumeric(),
-  body("garage", "Invalid Garage").isNumeric(),
-  body("garden", "Invalid Garden").isNumeric(),
-  body("pool", "Invalid Pool").isNumeric(),
-  body("contact", "Invalid Contact").trim().isMobilePhone().isLength({ min: 10, max: 15 }),
-  body("contact", "Invalid Contact").trim().isMobilePhone().isLength({ min: 10, max: 15 }),
-  body("description", "Invalid Description").trim().isLength({ max: 160 }),
-  body("price", "Invalid Price").isNumeric(),
+  body("living_room", "Invalid Living_Room").isNumeric().isInt({ min: 0, max: 5 }),
+  body("bed_room", "Invalid Bed_Room").isNumeric().isInt({ min: 0, max: 5 }),
+  body("bath_room", "Invalid Bath_Room").isNumeric().isInt({ min: 0, max: 5 }),
+  body("dinning_room", "Invalid Dinning_Room").isNumeric().isInt({ min: 0, max: 5 }),
+  body("kitchen", "Invalid Kitchen").isNumeric().isInt({ min: 0, max: 5 }),
+  body("garage", "Invalid Garage").isNumeric().isInt({ min: 0, max: 5 }),
+  body("garden", "Invalid Garden").isNumeric().isInt({ min: 0, max: 5 }),
+  body("pool", "Invalid Pool").isNumeric().isInt({ min: 0, max: 5 }),
+  body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
+  body("phone").custom((value) => {
+    const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'
+    if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
+    return value;
+  }),
+  body("description", "Invalid Description")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ max: 160 }),
+  body("currency").custom((value) => {
+    if (value !== "mn" && value !== "usd") {
+      throw new Error("Invalid Currency");
+    }
+    return value;
+  }),
+  body("frequency")
+    .optional({ checkFalsy: true })
+    .custom((value) => {
+      if (value !== "daily" && value !== "monthly") {
+        throw new Error("Invalid Frequency");
+      }
+      return value;
+    }),
+  body("amount", "Invalid Amount").isNumeric().isInt({ min: 1 }),
   valResults,
 ];

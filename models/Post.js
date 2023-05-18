@@ -8,7 +8,7 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  type: {
+  currency: {
     type: String,
     required: true,
   },
@@ -70,7 +70,7 @@ const postSchema = new Schema({
     },
     required: true,
   },
-  contact: {
+  phone: {
     type: String,
     required: true,
   },
