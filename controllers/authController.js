@@ -125,6 +125,7 @@ export const user = async (req, res) => {
     if (user.__t === "client") {
       return res.json({
         username: user.username,
+        __t: user.__t,
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -133,6 +134,7 @@ export const user = async (req, res) => {
         phone: user.phone,
         bio: user.bio,
         public_email: user.public_email,
+        __t: user.__t,
       });
     }
     return res.json({ ok: true });
