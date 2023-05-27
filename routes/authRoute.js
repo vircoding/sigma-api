@@ -22,6 +22,6 @@ router.post("/register/agent", agentValidator, registerAgent);
 router.post("/login", loginValidator, login);
 router.get("/refresh", requireRefreshToken, refresh);
 router.get("/logout", logout);
-router.get("/user", requireToken, user);
+router.get("/", requireToken, user);
 
 export default router;
