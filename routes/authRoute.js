@@ -7,12 +7,14 @@ import {
   logout,
   user,
   updateClient,
+  updateAgent,
 } from "../controllers/authController.js";
 import {
   loginValidator,
   clientValidator,
   agentValidator,
   updateClientValidator,
+  updateAgentValidator,
 } from "../middlewares/requestValidator.js";
 import { requireToken } from "../middlewares/requireToken.js";
 import { requireRefreshToken } from "../middlewares/requireRefreshToken.js";
@@ -26,5 +28,6 @@ router.get("/refresh", requireRefreshToken, refresh);
 router.get("/logout", logout);
 router.get("/", requireToken, user);
 router.patch("/update/client", requireToken, updateClientValidator, updateClient);
+router.patch("/update/agent", requireToken, updateAgentValidator, updateAgent);
 
 export default router;

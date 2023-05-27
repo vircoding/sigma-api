@@ -178,3 +178,31 @@ export const updateClient = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+export const updateAgent = async (req, res) => {
+  try {
+    const { firstname, lastname, phone, bio, public_email } = req.body;
+    const user = await User.findById(req.uid);
+
+    if (!user) return res.status(404).json({ error: "User not founded" });
+
+    user.firstname = firstname;
+    user.lastname = lastname;
+    user.phone = phone;
+    user.bio = bio;
+    user.public_email = public_email;
+    user.save();
+
+    return res.json({
+      firstname: user.firstname,
+      lastname: user.lastname,
+      phone: user.phone,
+      bio: user.bio,
+      public_email: user.public_email,
+      __t: user.__t,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};

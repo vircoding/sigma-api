@@ -79,6 +79,34 @@ export const updateClientValidator = [
   valResults,
 ];
 
+export const updateAgentValidator = [
+  body("firstname", "Invalid First Name")
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ min: 1, max: 30 }),
+  body("lastname", "Invalid Last Name")
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ min: 1, max: 30 }),
+  body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
+  body("phone").custom((value) => {
+    const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'
+    if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
+    return value;
+  }),
+  body("bio", "Invalid Bio")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ max: 160 }),
+  body("public_email", "Invalid Public Email")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isEmail()
+    .normalizeEmail(),
+  valResults,
+];
+
 export const paramValidator = [
   param("id", "Invalid ID Format").trim().notEmpty().escape(),
   valResults,
