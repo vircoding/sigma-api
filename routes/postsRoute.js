@@ -11,7 +11,7 @@ import { paramValidator, postValidator } from "../middlewares/requestValidator.j
 
 const router = Router();
 
-router.get("/user/", requireToken, getPosts);
+router.get("/user", requireToken, getPosts);
 router.get("/:id", paramValidator, getPost);
 router.post("/", requireToken, postValidator, setPost);
 router.delete("/:id", requireToken, paramValidator, removePost);
