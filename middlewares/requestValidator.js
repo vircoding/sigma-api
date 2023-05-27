@@ -71,6 +71,14 @@ export const loginValidator = [
   valResults,
 ];
 
+export const updateClientValidator = [
+  body("username", "Invalid Username")
+    .trim()
+    .isAlpha("es-ES", { ignore: " " })
+    .isLength({ min: 3, max: 20 }),
+  valResults,
+];
+
 export const paramValidator = [
   param("id", "Invalid ID Format").trim().notEmpty().escape(),
   valResults,

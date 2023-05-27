@@ -3,14 +3,16 @@ import {
   registerClient,
   registerAgent,
   login,
-  user,
   refresh,
   logout,
+  user,
+  updateClient,
 } from "../controllers/authController.js";
 import {
   loginValidator,
   clientValidator,
   agentValidator,
+  updateClientValidator,
 } from "../middlewares/requestValidator.js";
 import { requireToken } from "../middlewares/requireToken.js";
 import { requireRefreshToken } from "../middlewares/requireRefreshToken.js";
@@ -23,5 +25,6 @@ router.post("/login", loginValidator, login);
 router.get("/refresh", requireRefreshToken, refresh);
 router.get("/logout", logout);
 router.get("/", requireToken, user);
+router.patch("/update/client", requireToken, updateClientValidator, updateClient);
 
 export default router;

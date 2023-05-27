@@ -158,3 +158,23 @@ export const logout = (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+export const updateClient = async (req, res) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findById(req.uid);
+
+    if (!user) return res.status(404).json({ error: "User not founded" });
+
+    user.username = username;
+    user.save();
+
+    return res.json({
+      username: user.username,
+      __t: user.__t,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
