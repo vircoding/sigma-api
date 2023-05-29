@@ -7,7 +7,11 @@ import {
   updatePost,
 } from "../controllers/postsController.js";
 import { requireToken } from "../middlewares/requireToken.js";
-import { paramValidator, postValidator } from "../middlewares/requestValidator.js";
+import {
+  paramValidator,
+  postValidator,
+  updatePostValidator,
+} from "../middlewares/requestValidator.js";
 
 const router = Router();
 
@@ -15,6 +19,6 @@ router.get("/user", requireToken, getPosts);
 router.get("/:id", paramValidator, getPost);
 router.post("/", requireToken, postValidator, setPost);
 router.delete("/:id", requireToken, paramValidator, removePost);
-// router.patch("/:id", requireToken, paramValidator, postValidator, updatePost);
+router.patch("/:id", requireToken, paramValidator, updatePostValidator, updatePost);
 
 export default router;

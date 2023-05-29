@@ -28,7 +28,6 @@ export const getPost = async (req, res) => {
 
 export const setPost = async (req, res) => {
   if (req.body.type === "sale") {
-    console.log("Es venta");
     try {
       const sale = new Sale({
         uid: req.uid,
@@ -119,15 +118,45 @@ export const removePost = async (req, res) => {
 export const updatePost = async (req, res) => {
   try {
     const { id } = req.params;
-    const { buy, price } = req.body;
     const post = await Post.findById(id);
 
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
 
-    post.buy = buy;
-    post.price = price;
+    if (post.__t === "sale") {
+      post.address.province = req.body.province;
+      post.address.municipality = req.body.municipality;
+      post.features.living_room = req.body.living_room;
+      post.features.bed_room = req.body.bed_room;
+      post.features.bath_room = req.body.bath_room;
+      post.features.dinning_room = req.body.dinning_room;
+      post.features.kitchen = req.body.kitchen;
+      post.features.garage = req.body.garage;
+      post.features.garden = req.body.garden;
+      post.features.pool = req.body.pool;
+      post.phone = req.body.phone;
+      post.description = req.body.description;
+      post.currency = req.body.currency;
+      post.price = req.body.amount;
+    } else {
+      post.address.province = req.body.province;
+      post.address.municipality = req.body.municipality;
+      post.features.living_room = req.body.living_room;
+      post.features.bed_room = req.body.bed_room;
+      post.features.bath_room = req.body.bath_room;
+      post.features.dinning_room = req.body.dinning_room;
+      post.features.kitchen = req.body.kitchen;
+      post.features.garage = req.body.garage;
+      post.features.garden = req.body.garden;
+      post.features.pool = req.body.pool;
+      post.phone = req.body.phone;
+      post.description = req.body.description;
+      post.currency = req.body.currency;
+      post.tax = req.body.amount;
+      post.frequency = req.body.frequency;
+    }
+
     post.save();
 
     return res.json({ post });
