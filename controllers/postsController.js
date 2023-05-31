@@ -124,42 +124,108 @@ export const updatePost = async (req, res) => {
 
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
 
-    if (post.__t === "sale") {
-      post.address.province = req.body.province;
-      post.address.municipality = req.body.municipality;
-      post.features.living_room = req.body.living_room;
-      post.features.bed_room = req.body.bed_room;
-      post.features.bath_room = req.body.bath_room;
-      post.features.dinning_room = req.body.dinning_room;
-      post.features.kitchen = req.body.kitchen;
-      post.features.garage = req.body.garage;
-      post.features.garden = req.body.garden;
-      post.features.pool = req.body.pool;
-      post.phone = req.body.phone;
-      post.description = req.body.description;
-      post.currency = req.body.currency;
-      post.price = req.body.amount;
+    if (post.__t === req.body.type) {
+      try {
+        if (post.__t === "sale") {
+          post.price = req.body.amount;
+        } else {
+          post.tax = req.body.amount;
+          post.frequency = req.body.frequency;
+        }
+        post.address.province = req.body.province;
+        post.address.municipality = req.body.municipality;
+        post.features.living_room = req.body.living_room;
+        post.features.bed_room = req.body.bed_room;
+        post.features.bath_room = req.body.bath_room;
+        post.features.dinning_room = req.body.dinning_room;
+        post.features.kitchen = req.body.kitchen;
+        post.features.garage = req.body.garage;
+        post.features.garden = req.body.garden;
+        post.features.pool = req.body.pool;
+        post.phone = req.body.phone;
+        post.description = req.body.description;
+        post.currency = req.body.currency;
+
+        post.save();
+        return res.json({ post });
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Server error" });
+      }
     } else {
-      post.address.province = req.body.province;
-      post.address.municipality = req.body.municipality;
-      post.features.living_room = req.body.living_room;
-      post.features.bed_room = req.body.bed_room;
-      post.features.bath_room = req.body.bath_room;
-      post.features.dinning_room = req.body.dinning_room;
-      post.features.kitchen = req.body.kitchen;
-      post.features.garage = req.body.garage;
-      post.features.garden = req.body.garden;
-      post.features.pool = req.body.pool;
-      post.phone = req.body.phone;
-      post.description = req.body.description;
-      post.currency = req.body.currency;
-      post.tax = req.body.amount;
-      post.frequency = req.body.frequency;
+      if (req.body.type === "sale") {
+        try {
+          const sale = new Sale({
+            uid: req.uid,
+            address: {
+              province: req.body.province,
+              municipality: req.body.municipality,
+            },
+            features: {
+              living_room: req.body.living_room,
+              bed_room: req.body.bed_room,
+              bath_room: req.body.bath_room,
+              dinning_room: req.body.dinning_room,
+              kitchen: req.body.kitchen,
+              garage: req.body.garage,
+              garden: req.body.garden,
+              pool: req.body.pool,
+            },
+            phone: req.body.phone,
+            description: req.body.description,
+            currency: req.body.currency,
+            price: req.body.amount,
+            date: post.date,
+            visits: post.visits,
+            visits_count: post.visits_count,
+          });
+          const newSale = await sale.save();
+
+          await post.deleteOne();
+
+          return res.status(201).json(newSale);
+        } catch (error) {
+          console.log(error);
+          return res.status(500).json({ error: "Server error" });
+        }
+      } else {
+        try {
+          const rent = new Rent({
+            uid: req.uid,
+            address: {
+              province: req.body.province,
+              municipality: req.body.municipality,
+            },
+            features: {
+              living_room: req.body.living_room,
+              bed_room: req.body.bed_room,
+              bath_room: req.body.bath_room,
+              dinning_room: req.body.dinning_room,
+              kitchen: req.body.kitchen,
+              garage: req.body.garage,
+              garden: req.body.garden,
+              pool: req.body.pool,
+            },
+            phone: req.body.phone,
+            description: req.body.description,
+            currency: req.body.currency,
+            frequency: req.body.frequency,
+            tax: req.body.amount,
+            date: post.date,
+            visits: post.visits,
+            visits_count: post.visits_count,
+          });
+          const newRent = await rent.save();
+
+          await post.deleteOne();
+
+          return res.status(201).json(newRent);
+        } catch (error) {
+          console.log(error);
+          return res.status(500).json({ error: "Server error" });
+        }
+      }
     }
-
-    post.save();
-
-    return res.json({ post });
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     return res.status(500).json({ error: "Server error" });

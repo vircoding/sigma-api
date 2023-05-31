@@ -169,6 +169,12 @@ export const postValidator = [
 ];
 
 export const updatePostValidator = [
+  body("type").custom((value) => {
+    if (value !== "sale" && value !== "rent") {
+      throw new Error("Invalid Type");
+    }
+    return value;
+  }),
   body("province").custom((value) => {
     if (!provinceList.hasOwnProperty(value)) {
       throw new Error("Invalid Province");
