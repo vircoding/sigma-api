@@ -50,7 +50,6 @@ export const setPost = async (req, res) => {
         currency: req.body.currency,
         price: req.body.amount,
         date: new Date(),
-        visits: [],
         visits_count: 0,
       });
       const newSale = await sale.save();
@@ -83,10 +82,8 @@ export const setPost = async (req, res) => {
         frequency: req.body.frequency,
         tax: req.body.amount,
         date: new Date(),
-        visits: [],
         visits_count: 0,
       });
-      console.log("here");
       const newRent = await rent.save();
 
       return res.status(201).json(newRent);
@@ -212,7 +209,6 @@ export const updatePost = async (req, res) => {
             frequency: req.body.frequency,
             tax: req.body.amount,
             date: post.date,
-            visits: post.visits,
             visits_count: post.visits_count,
           });
           const newRent = await rent.save();
@@ -228,6 +224,26 @@ export const updatePost = async (req, res) => {
     }
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const visitPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ error: "Post not founded" });
+
+    if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
+
+    post.visits_count += 1;
+
+    await post.save();
+
+    res.status(200).json({ post });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };

@@ -16,5 +16,6 @@ router.get("/:id", paramValidator, getPost);
 router.post("/", requireToken, postValidator, setPost);
 router.delete("/:id", requireToken, paramValidator, removePost);
 router.patch("/:id", requireToken, paramValidator, postValidator, updatePost);
+router.put("/:id", paramValidator, visitPost);
 
 export default router;

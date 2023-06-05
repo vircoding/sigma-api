@@ -82,29 +82,6 @@ const postSchema = new Schema({
     type: Date,
     required: true,
   },
-  visits: {
-    type: [
-      {
-        date: {
-          type: Date,
-          required: true,
-        },
-        ip: {
-          type: String,
-          required: true,
-        },
-        browser: {
-          type: String,
-          required: true,
-        },
-        device: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    required: true,
-  },
   visits_count: {
     type: Number,
     required: true,
