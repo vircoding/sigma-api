@@ -5,6 +5,7 @@ import {
   setPost,
   removePost,
   updatePost,
+  visitPost,
 } from "../controllers/postsController.js";
 import { requireToken } from "../middlewares/requireToken.js";
 import { paramValidator, postValidator } from "../middlewares/requestValidator.js";
