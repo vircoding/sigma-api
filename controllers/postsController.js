@@ -247,3 +247,35 @@ export const visitPost = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+export const getPopularSales = async (req, res) => {
+  try {
+    const popular = await Sale.aggregate([
+      { $group: { _id: "$visits_count", posts: { $push: "$$ROOT" } } },
+      { $sort: { _id: -1 } },
+      { $limit: 10 },
+      { $unwind: "$posts" },
+      { $replaceRoot: { newRoot: "$posts" } },
+    ]);
+    res.json(popular);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const getPopularRents = async (req, res) => {
+  try {
+    const popular = await Rent.aggregate([
+      { $group: { _id: "$visits_count", posts: { $push: "$$ROOT" } } },
+      { $sort: { _id: -1 } },
+      { $limit: 10 },
+      { $unwind: "$posts" },
+      { $replaceRoot: { newRoot: "$posts" } },
+    ]);
+    res.json(popular);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
