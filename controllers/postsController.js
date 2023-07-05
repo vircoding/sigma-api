@@ -235,9 +235,6 @@ export const visitPost = async (req, res) => {
 
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
-    // TODO: Some uid verification to avoid same user visiting self posts
-    // if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
-
     post.visits_count += 1;
 
     await post.save();
