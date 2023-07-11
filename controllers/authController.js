@@ -86,6 +86,8 @@ export const login = async (req, res) => {
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
 
+    const role = user.__t;
+
     user.visits = user.connections.push({
       date: new Date(),
       ip: req.ip,
@@ -102,7 +104,7 @@ export const login = async (req, res) => {
 
     await user.save();
 
-    return res.json({ token, expiresIn });
+    return res.json({ token, expiresIn, role });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
