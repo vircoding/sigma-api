@@ -174,20 +174,27 @@ export const user = async (req, res) => {
     const user = await User.findById(req.uid).lean();
     if (user.__t === "client") {
       return res.json({
-        username: user.username,
-        __t: user.__t,
+        credentials: {
+          role: "client",
+        },
+        info: {
+          username: user.username,
+        },
       });
     } else if (user.__t === "agent") {
       return res.json({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        phone: user.phone,
-        bio: user.bio,
-        public_email: user.public_email,
-        __t: user.__t,
+        credentials: {
+          role: "agent",
+        },
+        info: {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          phone: user.phone,
+          bio: user.bio,
+          public_email: user.public_email,
+        },
       });
     }
-    return res.json({ ok: true });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
