@@ -109,7 +109,7 @@ export const login = async (req, res) => {
         info: {
           username: user.username,
         },
-        credetials: {
+        credentials: {
           token,
           expiresIn,
           role,
@@ -124,7 +124,7 @@ export const login = async (req, res) => {
           bio: user.bio,
           public_email: user.public_email,
         },
-        credetials: {
+        credentials: {
           token,
           expiresIn,
           role,
