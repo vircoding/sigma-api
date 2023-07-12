@@ -112,8 +112,8 @@ export const login = async (req, res) => {
         credetials: {
           token,
           expiresIn,
+          role,
         },
-        role,
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -127,8 +127,8 @@ export const login = async (req, res) => {
         credetials: {
           token,
           expiresIn,
+          role,
         },
-        role,
       });
     }
   } catch (error) {
