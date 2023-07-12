@@ -104,7 +104,33 @@ export const login = async (req, res) => {
 
     await user.save();
 
-    return res.json({ token, expiresIn, role });
+    if (user.__t === "client") {
+      return res.json({
+        info: {
+          username: user.username,
+        },
+        credetials: {
+          token,
+          expiresIn,
+        },
+        role,
+      });
+    } else if (user.__t === "agent") {
+      return res.json({
+        info: {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          phone: user.phone,
+          bio: user.bio,
+          public_email: user.public_email,
+        },
+        credetials: {
+          token,
+          expiresIn,
+        },
+        role,
+      });
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
