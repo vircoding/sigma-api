@@ -21,12 +21,22 @@ export const registerClient = async (req, res) => {
       ],
       username,
     });
-    await client.save();
 
     const { token, expiresIn } = generateToken(client.id);
     generateRefreshToken(client.id, res);
 
-    return res.status(201).json({ token, expiresIn });
+    await client.save();
+
+    return res.json({
+      info: {
+        username: client.username,
+      },
+      credentials: {
+        token,
+        expiresIn,
+        role: "client",
+      },
+    });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(403).json({ error: "User exists already" });
@@ -58,12 +68,26 @@ export const registerAgent = async (req, res) => {
       bio,
       public_email,
     });
-    await agent.save();
 
     const { token, expiresIn } = generateToken(agent.id);
     generateRefreshToken(agent.id, res);
 
-    return res.status(201).json({ token, expiresIn });
+    await agent.save();
+
+    return res.json({
+      info: {
+        firstname: agent.firstname,
+        lastname: agent.lastname,
+        phone: agent.phone,
+        bio: agent.bio,
+        public_email: agent.public_email,
+      },
+      credentials: {
+        token,
+        expiresIn,
+        role: "agent",
+      },
+    });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(403).json({ error: "User exists already" });
@@ -86,8 +110,6 @@ export const login = async (req, res) => {
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
 
-    const role = user.__t;
-
     user.visits = user.connections.push({
       date: new Date(),
       ip: req.ip,
@@ -105,18 +127,18 @@ export const login = async (req, res) => {
     await user.save();
 
     if (user.__t === "client") {
-      return res.status(200).json({
+      return res.json({
         info: {
           username: user.username,
         },
         credentials: {
           token,
           expiresIn,
-          role,
+          role: user.__t,
         },
       });
     } else if (user.__t === "agent") {
-      return res.status(200).json({
+      return res.json({
         info: {
           firstname: user.firstname,
           lastname: user.lastname,
@@ -127,7 +149,7 @@ export const login = async (req, res) => {
         credentials: {
           token,
           expiresIn,
-          role,
+          role: user.__t,
         },
       });
     }
