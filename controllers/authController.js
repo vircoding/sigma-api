@@ -105,7 +105,7 @@ export const login = async (req, res) => {
     await user.save();
 
     if (user.__t === "client") {
-      return res.json({
+      return res.status(200).json({
         info: {
           username: user.username,
         },
@@ -116,7 +116,7 @@ export const login = async (req, res) => {
         },
       });
     } else if (user.__t === "agent") {
-      return res.json({
+      return res.status(200).json({
         info: {
           firstname: user.firstname,
           lastname: user.lastname,
