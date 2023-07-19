@@ -35,7 +35,7 @@ const postSchema = new Schema({
       bath_room: {
         type: Number,
         required: true,
-        default: false,
+        default: 0,
       },
       garage: {
         type: Boolean,
@@ -48,6 +48,11 @@ const postSchema = new Schema({
         default: false,
       },
       pool: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      furnished: {
         type: Boolean,
         required: true,
         default: false,

@@ -136,6 +136,7 @@ export const postValidator = [
   body("garage", "Invalid Garage").isBoolean(),
   body("garden", "Invalid Garden").isBoolean(),
   body("pool", "Invalid Pool").isBoolean(),
+  body("furnished", "Invalid Furnished").isBoolean(),
   body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
   body("phone").custom((value) => {
     const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'

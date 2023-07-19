@@ -41,6 +41,7 @@ export const setPost = async (req, res) => {
           garage: req.body.garage,
           garden: req.body.garden,
           pool: req.body.pool,
+          furnished: req.body.furnished,
         },
         phone: req.body.phone,
         description: req.body.description,
@@ -69,6 +70,7 @@ export const setPost = async (req, res) => {
           garage: req.body.garage,
           garden: req.body.garden,
           pool: req.body.pool,
+          furnished: req.body.furnished,
         },
         phone: req.body.phone,
         description: req.body.description,
@@ -130,6 +132,7 @@ export const updatePost = async (req, res) => {
         post.features.garage = req.body.garage;
         post.features.garden = req.body.garden;
         post.features.pool = req.body.pool;
+        post.features.furnished = req.body.furnished;
         post.phone = req.body.phone;
         post.description = req.body.description;
         post.currency = req.body.currency;
@@ -155,6 +158,7 @@ export const updatePost = async (req, res) => {
               garage: req.body.garage,
               garden: req.body.garden,
               pool: req.body.pool,
+              furnished: req.body.furnished,
             },
             phone: req.body.phone,
             description: req.body.description,
@@ -187,6 +191,7 @@ export const updatePost = async (req, res) => {
               garage: req.body.garage,
               garden: req.body.garden,
               pool: req.body.pool,
+              furnished: req.body.furnished,
             },
             phone: req.body.phone,
             description: req.body.description,
