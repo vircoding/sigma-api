@@ -27,11 +27,6 @@ const postSchema = new Schema({
   },
   features: {
     type: {
-      living_room: {
-        type: Number,
-        required: true,
-        default: 0,
-      },
       bed_room: {
         type: Number,
         required: true,
@@ -40,32 +35,22 @@ const postSchema = new Schema({
       bath_room: {
         type: Number,
         required: true,
-        default: 0,
-      },
-      dinning_room: {
-        type: Number,
-        required: true,
-        default: 0,
-      },
-      kitchen: {
-        type: Number,
-        required: true,
-        default: 0,
+        default: false,
       },
       garage: {
-        type: Number,
+        type: Boolean,
         required: true,
-        default: 0,
+        default: false,
       },
       garden: {
-        type: Number,
+        type: Boolean,
         required: true,
-        default: 0,
+        default: false,
       },
       pool: {
-        type: Number,
+        type: Boolean,
         required: true,
-        default: 0,
+        default: false,
       },
     },
     required: true,

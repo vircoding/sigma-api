@@ -36,11 +36,8 @@ export const setPost = async (req, res) => {
           municipality: req.body.municipality,
         },
         features: {
-          living_room: req.body.living_room,
           bed_room: req.body.bed_room,
           bath_room: req.body.bath_room,
-          dinning_room: req.body.dinning_room,
-          kitchen: req.body.kitchen,
           garage: req.body.garage,
           garden: req.body.garden,
           pool: req.body.pool,
@@ -67,11 +64,8 @@ export const setPost = async (req, res) => {
           municipality: req.body.municipality,
         },
         features: {
-          living_room: req.body.living_room,
           bed_room: req.body.bed_room,
           bath_room: req.body.bath_room,
-          dinning_room: req.body.dinning_room,
-          kitchen: req.body.kitchen,
           garage: req.body.garage,
           garden: req.body.garden,
           pool: req.body.pool,
@@ -131,11 +125,8 @@ export const updatePost = async (req, res) => {
         }
         post.address.province = req.body.province;
         post.address.municipality = req.body.municipality;
-        post.features.living_room = req.body.living_room;
         post.features.bed_room = req.body.bed_room;
         post.features.bath_room = req.body.bath_room;
-        post.features.dinning_room = req.body.dinning_room;
-        post.features.kitchen = req.body.kitchen;
         post.features.garage = req.body.garage;
         post.features.garden = req.body.garden;
         post.features.pool = req.body.pool;
@@ -159,11 +150,8 @@ export const updatePost = async (req, res) => {
               municipality: req.body.municipality,
             },
             features: {
-              living_room: req.body.living_room,
               bed_room: req.body.bed_room,
               bath_room: req.body.bath_room,
-              dinning_room: req.body.dinning_room,
-              kitchen: req.body.kitchen,
               garage: req.body.garage,
               garden: req.body.garden,
               pool: req.body.pool,
@@ -194,11 +182,8 @@ export const updatePost = async (req, res) => {
               municipality: req.body.municipality,
             },
             features: {
-              living_room: req.body.living_room,
               bed_room: req.body.bed_room,
               bath_room: req.body.bath_room,
-              dinning_room: req.body.dinning_room,
-              kitchen: req.body.kitchen,
               garage: req.body.garage,
               garden: req.body.garden,
               pool: req.body.pool,

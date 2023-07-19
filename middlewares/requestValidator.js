@@ -131,14 +131,11 @@ export const postValidator = [
     }
     return value;
   }),
-  body("living_room", "Invalid Living_Room").isNumeric().isInt({ min: 0, max: 5 }),
   body("bed_room", "Invalid Bed_Room").isNumeric().isInt({ min: 0, max: 5 }),
   body("bath_room", "Invalid Bath_Room").isNumeric().isInt({ min: 0, max: 5 }),
-  body("dinning_room", "Invalid Dinning_Room").isNumeric().isInt({ min: 0, max: 5 }),
-  body("kitchen", "Invalid Kitchen").isNumeric().isInt({ min: 0, max: 5 }),
-  body("garage", "Invalid Garage").isNumeric().isInt({ min: 0, max: 5 }),
-  body("garden", "Invalid Garden").isNumeric().isInt({ min: 0, max: 5 }),
-  body("pool", "Invalid Pool").isNumeric().isInt({ min: 0, max: 5 }),
+  body("garage", "Invalid Garage").isBoolean(),
+  body("garden", "Invalid Garden").isBoolean(),
+  body("pool", "Invalid Pool").isBoolean(),
   body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
   body("phone").custom((value) => {
     const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'
