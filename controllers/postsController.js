@@ -165,7 +165,6 @@ export const updatePost = async (req, res) => {
             currency: req.body.currency,
             price: req.body.amount,
             date: post.date,
-            visits: post.visits,
             visits_count: post.visits_count,
           });
           const newSale = await sale.save();
