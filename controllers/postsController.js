@@ -1,6 +1,7 @@
 import { Post } from "../models/Post.js";
 import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
+import { User } from "../models/User.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -16,10 +17,29 @@ export const getPost = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findById(id);
-
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
-    return res.json({ post });
+    const user = await User.findOne({ uid: post.uid });
+    if (!user) return res.status(403).json({ error: "Agent not founded" });
+
+    if (user.__t === "agent") {
+      return res.json({
+        post,
+        agent: {
+          uid: user.uid,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          phone: user.phone,
+          bio: user.bio,
+          public_email: user.public_email,
+        },
+      });
+    }
+
+    return res.json({
+      post,
+      agent: "",
+    });
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     return res.status(500).json({ error: "Server error" });
