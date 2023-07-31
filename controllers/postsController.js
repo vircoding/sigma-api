@@ -19,26 +19,31 @@ export const getPost = async (req, res) => {
     const post = await Post.findById(id);
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
-    const user = await User.findOne({ uid: post.uid });
+    const user = await User.findOne({ _id: post.uid });
     if (!user) return res.status(403).json({ error: "Agent not founded" });
 
     if (user.__t === "agent") {
       return res.json({
         post,
-        agent: {
-          uid: user.uid,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          phone: user.phone,
-          bio: user.bio,
-          public_email: user.public_email,
+        published_by: {
+          role: "agent",
+          agent: {
+            uid: user.uid,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            phone: user.phone,
+            bio: user.bio,
+            public_email: user.public_email,
+          },
         },
       });
     }
 
     return res.json({
       post,
-      agent: "",
+      published_by: {
+        role: "client",
+      },
     });
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
