@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+const { Schema } = mongoose;
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -42,6 +44,19 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
     default: 1,
+  },
+  favorites: {
+    type: [
+      {
+        id: {
+          type: Schema.Types.ObjectId,
+          ref: "Post",
+          required: true,
+        },
+      },
+    ],
+    required: true,
+    default: [],
   },
 });
 

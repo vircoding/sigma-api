@@ -36,6 +36,7 @@ export const registerClient = async (req, res) => {
         expiresIn,
         role: "client",
       },
+      favorites: client.favorites,
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -87,6 +88,7 @@ export const registerAgent = async (req, res) => {
         expiresIn,
         role: "agent",
       },
+      favorites: agent.favorites,
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -136,6 +138,7 @@ export const login = async (req, res) => {
           expiresIn,
           role: user.__t,
         },
+        favorites: user.favorites,
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -151,6 +154,7 @@ export const login = async (req, res) => {
           expiresIn,
           role: user.__t,
         },
+        favorites: user.favorites,
       });
     }
   } catch (error) {
@@ -174,18 +178,16 @@ export const user = async (req, res) => {
     const user = await User.findById(req.uid).lean();
     if (user.__t === "client") {
       return res.json({
-        credentials: {
-          role: "client",
-        },
         info: {
           username: user.username,
         },
+        credentials: {
+          role: "client",
+        },
+        favorites: user.favorites,
       });
     } else if (user.__t === "agent") {
       return res.json({
-        credentials: {
-          role: "agent",
-        },
         info: {
           firstname: user.firstname,
           lastname: user.lastname,
@@ -193,6 +195,10 @@ export const user = async (req, res) => {
           bio: user.bio,
           public_email: user.public_email,
         },
+        credentials: {
+          role: "agent",
+        },
+        favorites: user.favorites,
       });
     }
   } catch (error) {
@@ -227,8 +233,13 @@ export const updateClient = async (req, res) => {
     user.save();
 
     return res.json({
-      username: user.username,
-      __t: user.__t,
+      info: {
+        username: user.username,
+      },
+      credentials: {
+        role: "client",
+      },
+      favorites: user.favorites,
     });
   } catch (error) {
     console.log(error);
@@ -251,12 +262,17 @@ export const updateAgent = async (req, res) => {
     user.save();
 
     return res.json({
-      firstname: user.firstname,
-      lastname: user.lastname,
-      phone: user.phone,
-      bio: user.bio,
-      public_email: user.public_email,
-      __t: user.__t,
+      info: {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phone: user.phone,
+        bio: user.bio,
+        public_email: user.public_email,
+      },
+      credentials: {
+        role: "agent",
+      },
+      favorites: user.favorites,
     });
   } catch (error) {
     console.log(error);
