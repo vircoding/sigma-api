@@ -291,7 +291,7 @@ export const favorite = async (req, res) => {
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
     if (add) {
-      user.favorites.push({ id });
+      if (!user.favorites.find((item) => item.id.toString() === id)) user.favorites.push({ id });
     } else {
       const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
       user.favorites = newFavorites;
