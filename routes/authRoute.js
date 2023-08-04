@@ -16,7 +16,6 @@ import {
   agentValidator,
   updateClientValidator,
   updateAgentValidator,
-  paramValidator,
 } from "../middlewares/requestValidator.js";
 import { requireToken } from "../middlewares/requireToken.js";
 import { requireRefreshToken } from "../middlewares/requireRefreshToken.js";
@@ -31,6 +30,6 @@ router.get("/logout", logout);
 router.get("/", requireToken, user);
 router.patch("/update/client", requireToken, updateClientValidator, updateClient);
 router.patch("/update/agent", requireToken, updateAgentValidator, updateAgent);
-router.put("/favorite", requireToken, paramValidator, favorite);
+router.put("/favorite", requireToken, favorite);
 
 export default router;
