@@ -283,7 +283,7 @@ export const updateAgent = async (req, res) => {
 
 export const favorite = async (req, res) => {
   try {
-    const user = await User.findById(req.uid).lean();
+    const user = await User.findById(req.uid);
     const id = req.query.id;
     const add = req.query.add;
     const post = await Post.findById(id);
