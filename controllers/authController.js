@@ -285,17 +285,16 @@ export const favorite = async (req, res) => {
   try {
     const user = await User.findById(req.uid);
     const id = req.query.id;
-    const add = req.query.add;
+    const add = Boolean(req.query.add);
     const post = await Post.findById(id);
 
     if (!post) return res.status(404).json({ error: "Post not founded" });
-    else {
-      if (add) {
-        user.favorites.push({ id });
-      } else {
-        const newFavorites = user.favorites.filter((item) => item.id !== id);
-        user.favorites = newFavorites;
-      }
+
+    if (add) {
+      user.favorites.push({ id });
+    } else {
+      const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
+      user.favorites = newFavorites;
     }
 
     await user.save();
