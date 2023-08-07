@@ -1,7 +1,6 @@
 import { User } from "../models/User.js";
 import { Client } from "../models/Client.js";
 import { Agent } from "../models/Agent.js";
-import { Post } from "../models/Post.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
 
 export const registerClient = async (req, res) => {
@@ -275,31 +274,6 @@ export const updateAgent = async (req, res) => {
       },
       favorites: user.favorites,
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Server error" });
-  }
-};
-
-export const favorite = async (req, res) => {
-  try {
-    const user = await User.findById(req.uid);
-    const id = req.query.id;
-    const add = Boolean(req.query.add);
-    const post = await Post.findById(id);
-
-    if (!post) return res.status(404).json({ error: "Post not founded" });
-
-    if (add) {
-      if (!user.favorites.find((item) => item.id.toString() === id)) user.favorites.push({ id });
-    } else {
-      const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
-      user.favorites = newFavorites;
-    }
-
-    await user.save();
-
-    res.json({ favorites: user.favorites });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });

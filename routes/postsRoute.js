@@ -8,6 +8,7 @@ import {
   visitPost,
   getPopularSales,
   getPopularRents,
+  favoritePost,
 } from "../controllers/postsController.js";
 import { requireToken } from "../middlewares/requireToken.js";
 import { paramValidator, postValidator } from "../middlewares/requestValidator.js";
@@ -21,6 +22,7 @@ router.get("/:id", paramValidator, getPost);
 router.post("/", requireToken, postValidator, setPost);
 router.delete("/:id", requireToken, paramValidator, removePost);
 router.patch("/:id", requireToken, paramValidator, postValidator, updatePost);
-router.put("/:id", paramValidator, visitPost);
+router.put("/visit/:id", paramValidator, visitPost);
+router.put("/favorite/:id", requireToken, favoritePost);
 
 export default router;

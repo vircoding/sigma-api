@@ -77,6 +77,11 @@ const postSchema = new Schema({
     required: true,
     default: 1,
   },
+  favorite_count: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
 });
 
 export const Post = model("Post", postSchema);

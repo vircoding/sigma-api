@@ -8,7 +8,6 @@ import {
   user,
   updateClient,
   updateAgent,
-  favorite,
 } from "../controllers/authController.js";
 import {
   loginValidator,
@@ -30,6 +29,5 @@ router.get("/logout", logout);
 router.get("/", requireToken, user);
 router.patch("/update/client", requireToken, updateClientValidator, updateClient);
 router.patch("/update/agent", requireToken, updateAgentValidator, updateAgent);
-router.put("/favorite", requireToken, favorite);
 
 export default router;

@@ -291,3 +291,30 @@ export const getPopularRents = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+export const favoritePost = async (req, res) => {
+  try {
+    const user = await User.findById(req.uid);
+    const { id } = req.params;
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ error: "Post not founded" });
+
+    if (!user.favorites.find((item) => item.id.toString() === id)) {
+      user.favorites.push({ id });
+      post.favorite_count += 1;
+    } else {
+      const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
+      user.favorites = newFavorites;
+      post.favorite_count -= 1;
+    }
+
+    await user.save();
+    await post.save();
+
+    res.json({ favorites: user.favorites });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
