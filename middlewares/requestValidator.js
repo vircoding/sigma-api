@@ -52,11 +52,7 @@ export const agentValidator = [
     if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
     return value;
   }),
-  body("bio", "Invalid Bio")
-    .optional({ checkFalsy: true })
-    .trim()
-    .isAlpha("es-ES", { ignore: " " })
-    .isLength({ max: 160 }),
+  body("bio", "Invalid Bio").optional().trim().isLength({ max: 160 }),
   body("public_email", "Invalid Public Email")
     .optional({ checkFalsy: true })
     .trim()
@@ -94,11 +90,7 @@ export const updateAgentValidator = [
     if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
     return value;
   }),
-  body("bio", "Invalid Bio")
-    .optional({ checkFalsy: true })
-    .trim()
-    .isAlpha("es-ES", { ignore: " " })
-    .isLength({ max: 160 }),
+  body("bio", "Invalid Bio").optional().trim().isLength({ max: 160 }),
   body("public_email", "Invalid Public Email")
     .optional({ checkFalsy: true })
     .trim()
@@ -143,11 +135,7 @@ export const postValidator = [
     if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
     return value;
   }),
-  body("description", "Invalid Description")
-    .optional({ checkFalsy: true })
-    .trim()
-    .isAlpha("es-ES", { ignore: " " })
-    .isLength({ max: 160 }),
+  body("description", "Invalid Description").optional().trim().isLength({ max: 160 }),
   body("currency").custom((value) => {
     if (value !== "mn" && value !== "usd") {
       throw new Error("Invalid Currency");
