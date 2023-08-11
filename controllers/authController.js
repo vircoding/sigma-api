@@ -175,7 +175,8 @@ export const refresh = (req, res) => {
 
 export const user = async (req, res) => {
   try {
-    const user = await User.findById(req.uid).lean();
+    const user = await User.findById(req.uid);
+    console.log(user);
     if (user.__t === "client") {
       return res.json({
         info: {

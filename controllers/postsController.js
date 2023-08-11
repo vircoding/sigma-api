@@ -4,11 +4,24 @@ import { Rent } from "../models/Rent.js";
 import { User } from "../models/User.js";
 
 export const getPosts = async (req, res) => {
-  try {
-    const posts = await Post.find({ uid: req.uid });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
 
-    return res.json({ posts });
+  try {
+    const posts = await Post.find({ uid: req.uid })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const allPosts = await Post.find({ uid: req.uid });
+
+    return res.json({
+      posts,
+      page,
+      total_posts: allPosts.length,
+      total_pages: Math.ceil(allPosts.length / limit),
+    });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
