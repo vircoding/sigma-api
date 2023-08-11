@@ -12,13 +12,13 @@ export const getPosts = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    const allPosts = await Post.find({ uid: req.uid });
+    const total_posts = await Post.find({ uid: req.uid }).countDocuments();
 
     return res.json({
       posts,
       page,
-      total_posts: allPosts.length,
-      total_pages: Math.ceil(allPosts.length / limit),
+      total_posts,
+      total_pages: Math.ceil(total_posts / limit),
     });
   } catch (error) {
     console.log(error);
