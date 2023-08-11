@@ -26,6 +26,31 @@ export const getPosts = async (req, res) => {
   }
 };
 
+export const getFavorites = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const favorites = [];
+
+  try {
+    const user = await User.findById(req.uid);
+
+    for (const item of user.favorites) {
+      const post = await Post.findById(item.id);
+      favorites.push(post);
+    }
+
+    return res.json({
+      favorites: favorites.slice((page - 1) * limit, page * limit),
+      page,
+      total_favorites: favorites.length,
+      total_pages: Math.ceil(favorites.length / limit),
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
 export const getPost = async (req, res) => {
   try {
     const { id } = req.params;

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getPosts,
+  getFavorites,
   getPost,
   setPost,
   removePost,
@@ -18,6 +19,7 @@ const router = Router();
 router.get("/sales", getPopularSales);
 router.get("/rents", getPopularRents);
 router.get("/user", requireToken, getPosts);
+router.get("/user/favorites", requireToken, getFavorites);
 router.get("/:id", paramValidator, getPost);
 router.post("/", requireToken, postValidator, setPost);
 router.delete("/:id", requireToken, paramValidator, removePost);
