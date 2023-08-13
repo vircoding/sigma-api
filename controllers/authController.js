@@ -36,7 +36,6 @@ export const registerClient = async (req, res) => {
         expiresIn,
         role: "client",
       },
-      favorites: client.favorites,
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -88,7 +87,6 @@ export const registerAgent = async (req, res) => {
         expiresIn,
         role: "agent",
       },
-      favorites: agent.favorites,
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -138,7 +136,6 @@ export const login = async (req, res) => {
           expiresIn,
           role: user.__t,
         },
-        favorites: user.favorites,
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -154,7 +151,6 @@ export const login = async (req, res) => {
           expiresIn,
           role: user.__t,
         },
-        favorites: user.favorites,
       });
     }
   } catch (error) {
@@ -176,7 +172,6 @@ export const refresh = (req, res) => {
 export const user = async (req, res) => {
   try {
     const user = await User.findById(req.uid);
-    console.log(user);
     if (user.__t === "client") {
       return res.json({
         info: {
@@ -185,7 +180,6 @@ export const user = async (req, res) => {
         credentials: {
           role: "client",
         },
-        favorites: user.favorites,
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -199,7 +193,6 @@ export const user = async (req, res) => {
         credentials: {
           role: "agent",
         },
-        favorites: user.favorites,
       });
     }
   } catch (error) {
@@ -240,7 +233,6 @@ export const updateClient = async (req, res) => {
       credentials: {
         role: "client",
       },
-      favorites: user.favorites,
     });
   } catch (error) {
     console.log(error);
@@ -273,7 +265,6 @@ export const updateAgent = async (req, res) => {
       credentials: {
         role: "agent",
       },
-      favorites: user.favorites,
     });
   } catch (error) {
     console.log(error);
