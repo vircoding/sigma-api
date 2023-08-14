@@ -350,7 +350,7 @@ export const favoritePost = async (req, res) => {
     await user.save();
     await post.save();
 
-    res.json({ favorites: user.favorites });
+    res.json({ favorites: user.favorites.map((item) => item.id) });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
