@@ -41,7 +41,7 @@ export const getFavorites = async (req, res) => {
 
     return res.json({
       favorites: favorites.slice((page - 1) * limit, page * limit),
-      page: total_favorites === 0 ? 0 : page,
+      page: favorites.length === 0 ? 0 : page,
       total_favorites: favorites.length,
       total_pages: Math.ceil(favorites.length / limit),
     });
