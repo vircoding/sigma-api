@@ -16,7 +16,7 @@ export const getPosts = async (req, res) => {
 
     return res.json({
       posts,
-      page,
+      page: total_posts === 0 ? 0 : page,
       total_posts,
       total_pages: Math.ceil(total_posts / limit),
     });
@@ -41,7 +41,7 @@ export const getFavorites = async (req, res) => {
 
     return res.json({
       favorites: favorites.slice((page - 1) * limit, page * limit),
-      page,
+      page: total_favorites === 0 ? 0 : page,
       total_favorites: favorites.length,
       total_pages: Math.ceil(favorites.length / limit),
     });
