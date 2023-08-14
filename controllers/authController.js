@@ -112,7 +112,7 @@ export const login = async (req, res) => {
     const passwordVal = await user.comparePassword(password);
     if (!passwordVal) return res.status(403).json({ error: "Invalid Credentials" });
 
-    const posts = await Post.find({ uid: req.uid });
+    const posts = await Post.find({ uid: user._id });
 
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
