@@ -176,6 +176,7 @@ export const refresh = (req, res) => {
 export const user = async (req, res) => {
   try {
     const user = await User.findById(req.uid);
+
     if (user.__t === "client") {
       return res.json({
         info: {
@@ -184,6 +185,7 @@ export const user = async (req, res) => {
         credentials: {
           role: "client",
         },
+        favorites: user.favorites.map((item) => item.id),
       });
     } else if (user.__t === "agent") {
       return res.json({
