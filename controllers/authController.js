@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import { Post } from "../models/Post.js";
 import { Client } from "../models/Client.js";
 import { Agent } from "../models/Agent.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
@@ -36,7 +37,8 @@ export const registerClient = async (req, res) => {
         expiresIn,
         role: "client",
       },
-      favorites: client.favorites.map((item) => item.id),
+      favorites: [],
+      posts: [],
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -88,7 +90,8 @@ export const registerAgent = async (req, res) => {
         expiresIn,
         role: "agent",
       },
-      favorites: agent.favorites.map((item) => item.id),
+      favorites: [],
+      posts: [],
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -108,6 +111,8 @@ export const login = async (req, res) => {
 
     const passwordVal = await user.comparePassword(password);
     if (!passwordVal) return res.status(403).json({ error: "Invalid Credentials" });
+
+    const posts = await Post.find({ uid: req.uid });
 
     const { token, expiresIn } = generateToken(user.id);
     generateRefreshToken(user.id, res);
@@ -139,6 +144,7 @@ export const login = async (req, res) => {
           role: user.__t,
         },
         favorites: user.favorites.map((item) => item.id),
+        posts: posts ? posts.map((item) => item._id) : [],
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -155,6 +161,7 @@ export const login = async (req, res) => {
           role: user.__t,
         },
         favorites: user.favorites.map((item) => item.id),
+        posts: posts ? posts.map((item) => item._id) : [],
       });
     }
   } catch (error) {
@@ -176,6 +183,7 @@ export const refresh = (req, res) => {
 export const user = async (req, res) => {
   try {
     const user = await User.findById(req.uid);
+    const posts = await Post.find({ uid: req.uid });
 
     if (user.__t === "client") {
       return res.json({
@@ -186,6 +194,7 @@ export const user = async (req, res) => {
           role: "client",
         },
         favorites: user.favorites.map((item) => item.id),
+        posts: posts ? posts.map((item) => item._id) : [],
       });
     } else if (user.__t === "agent") {
       return res.json({
@@ -200,6 +209,7 @@ export const user = async (req, res) => {
           role: "agent",
         },
         favorites: user.favorites.map((item) => item.id),
+        posts: posts ? posts.map((item) => item._id) : [],
       });
     }
   } catch (error) {
