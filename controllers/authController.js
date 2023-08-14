@@ -240,6 +240,8 @@ export const updateClient = async (req, res) => {
 
     if (!user) return res.status(404).json({ error: "User not founded" });
 
+    const posts = await Post.find({ uid: req.uid });
+
     user.username = username;
     user.save();
 
@@ -251,6 +253,7 @@ export const updateClient = async (req, res) => {
         role: "client",
       },
       favorites: user.favorites.map((item) => item.id),
+      posts: posts ? posts.map((item) => item._id) : [],
     });
   } catch (error) {
     console.log(error);
@@ -264,6 +267,8 @@ export const updateAgent = async (req, res) => {
     const user = await User.findById(req.uid);
 
     if (!user) return res.status(404).json({ error: "User not founded" });
+
+    const posts = await Post.find({ uid: req.uid });
 
     user.firstname = firstname;
     user.lastname = lastname;
@@ -284,6 +289,7 @@ export const updateAgent = async (req, res) => {
         role: "agent",
       },
       favorites: user.favorites.map((item) => item.id),
+      posts: posts ? posts.map((item) => item._id) : [],
     });
   } catch (error) {
     console.log(error);
