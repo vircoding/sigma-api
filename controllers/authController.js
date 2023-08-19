@@ -208,7 +208,12 @@ export const user = async (req, res) => {
         credentials: {
           role: "agent",
         },
-        favorites: user.favorites.map((item) => item.id),
+        favorites: user.favorites.map((item) => {
+          return {
+            id: item.id,
+            status: item.status,
+          };
+        }),
         posts: posts ? posts.map((item) => item._id) : [],
       });
     }

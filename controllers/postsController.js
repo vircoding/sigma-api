@@ -164,6 +164,8 @@ export const removePost = async (req, res) => {
 
     await post.deleteOne();
 
+    await User.updateMany({ "favorites.id": id }, { $set: { "favorites.$.status": "deleted" } });
+
     return res.json({ post });
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
@@ -350,7 +352,14 @@ export const favoritePost = async (req, res) => {
     await user.save();
     await post.save();
 
-    res.json({ favorites: user.favorites.map((item) => item.id) });
+    res.json({
+      favorites: user.favorites.map((item) => {
+        return {
+          id: item.id,
+          status: item.status,
+        };
+      }),
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });

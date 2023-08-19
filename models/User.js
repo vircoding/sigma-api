@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema({
           ref: "Post",
           required: true,
         },
+        status: {
+          type: String,
+          enum: ["active", "deleted", "soldout"],
+          default: "active",
+        },
       },
     ],
     required: true,
