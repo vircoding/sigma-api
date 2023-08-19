@@ -35,8 +35,22 @@ export const getFavorites = async (req, res) => {
     const user = await User.findById(req.uid);
 
     for (const item of user.favorites) {
-      const post = await Post.findById(item.id);
-      favorites.push(post);
+      if (item.status === "active") {
+        const post = await Post.findById(item.id);
+        favorites.push(post);
+      } else if (item.status === "soldout") {
+        const post = {
+          _id: item.id,
+          status: "soldout",
+        };
+        favorites.push(post);
+      } else {
+        const post = {
+          _id: item.id,
+          status: "deleted",
+        };
+        favorites.push(post);
+      }
     }
 
     return res.json({
