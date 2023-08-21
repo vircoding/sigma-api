@@ -180,7 +180,9 @@ export const removePost = async (req, res) => {
 
     await User.updateMany({ "favorites.id": id }, { $set: { "favorites.$.status": "deleted" } });
 
-    return res.json({ post });
+    const posts = await Post.find({ uid: req.uid });
+
+    return res.json({ posts: posts ? posts.map((item) => item._id) : [], removed: post });
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     return res.status(500).json({ error: "Server error" });
