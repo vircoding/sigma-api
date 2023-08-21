@@ -347,7 +347,7 @@ export const getPopularRents = async (req, res) => {
 };
 
 export const favoritePost = async (req, res) => {
-  const remove = Boolean(req.query.page) || false;
+  const remove = Boolean(req.query.remove) || false;
   try {
     const user = await User.findById(req.uid);
     const { id } = req.params;
