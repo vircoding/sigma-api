@@ -347,24 +347,32 @@ export const getPopularRents = async (req, res) => {
 };
 
 export const favoritePost = async (req, res) => {
+  const remove = Boolean(req.query.page) || false;
   try {
     const user = await User.findById(req.uid);
     const { id } = req.params;
-    const post = await Post.findById(id);
 
-    if (!post) return res.status(404).json({ error: "Post not founded" });
-
-    if (!user.favorites.find((item) => item.id.toString() === id)) {
-      user.favorites.push({ id });
-      post.favorite_count += 1;
-    } else {
+    if (remove) {
       const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
       user.favorites = newFavorites;
-      post.favorite_count -= 1;
-    }
 
-    await user.save();
-    await post.save();
+      await user.save();
+    } else {
+      const post = await Post.findById(id);
+
+      if (!post) return res.status(404).json({ error: "Post not founded" });
+
+      if (!user.favorites.find((item) => item.id.toString() === id)) {
+        user.favorites.push({ id });
+        post.favorite_count += 1;
+      } else {
+        const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
+        user.favorites = newFavorites;
+        post.favorite_count -= 1;
+      }
+      await user.save();
+      await post.save();
+    }
 
     res.json({
       favorites: user.favorites.map((item) => {
