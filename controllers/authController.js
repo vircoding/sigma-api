@@ -194,8 +194,6 @@ export const user = async (req, res) => {
   const reqPosts = Boolean(req.query.posts);
   const reqFavorites = Boolean(req.query.favorites);
 
-  console.log(reqFavorites, reqPosts);
-
   try {
     if (!reqPosts && reqFavorites) {
       // Favorites
