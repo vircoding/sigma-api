@@ -143,7 +143,12 @@ export const login = async (req, res) => {
           expiresIn,
           role: user.__t,
         },
-        favorites: user.favorites.map((item) => item.id),
+        favorites: user.favorites.map((item) => {
+          return {
+            id: item.id,
+            status: item.status,
+          };
+        }),
         posts: posts ? posts.map((item) => item._id) : [],
       });
     } else if (user.__t === "agent") {
@@ -160,7 +165,12 @@ export const login = async (req, res) => {
           expiresIn,
           role: user.__t,
         },
-        favorites: user.favorites.map((item) => item.id),
+        favorites: user.favorites.map((item) => {
+          return {
+            id: item.id,
+            status: item.status,
+          };
+        }),
         posts: posts ? posts.map((item) => item._id) : [],
       });
     }
@@ -181,33 +191,35 @@ export const refresh = (req, res) => {
 };
 
 export const user = async (req, res) => {
-  try {
-    const user = await User.findById(req.uid);
-    const posts = await Post.find({ uid: req.uid });
+  const reqPosts = Boolean(req.query.posts);
+  const reqFavorites = Boolean(req.query.favorites);
 
-    if (user.__t === "client") {
+  console.log(reqFavorites, reqPosts);
+
+  try {
+    if (!reqPosts && reqFavorites) {
+      // Favorites
+      const user = await User.findById(req.uid);
+
       return res.json({
-        info: {
-          username: user.username,
-        },
-        credentials: {
-          role: "client",
-        },
-        favorites: user.favorites.map((item) => item.id),
-        posts: posts ? posts.map((item) => item._id) : [],
+        favorites: user.favorites.map((item) => {
+          return {
+            id: item.id,
+            status: item.status,
+          };
+        }),
       });
-    } else if (user.__t === "agent") {
+    } else if (reqPosts && !reqFavorites) {
+      // Posts
+      const posts = await Post.find({ uid: req.uid });
+
+      return res.json({ posts: posts ? posts.map((item) => item._id) : [] });
+    } else if (reqPosts && reqFavorites) {
+      // Posts & Favorites
+      const user = await User.findById(req.uid);
+      const posts = await Post.find({ uid: req.uid });
+
       return res.json({
-        info: {
-          firstname: user.firstname,
-          lastname: user.lastname,
-          phone: user.phone,
-          bio: user.bio,
-          public_email: user.public_email,
-        },
-        credentials: {
-          role: "agent",
-        },
         favorites: user.favorites.map((item) => {
           return {
             id: item.id,
@@ -216,6 +228,48 @@ export const user = async (req, res) => {
         }),
         posts: posts ? posts.map((item) => item._id) : [],
       });
+    } else {
+      // All user info
+      const user = await User.findById(req.uid);
+      const posts = await Post.find({ uid: req.uid });
+
+      if (user.__t === "client") {
+        return res.json({
+          info: {
+            username: user.username,
+          },
+          credentials: {
+            role: "client",
+          },
+          favorites: user.favorites.map((item) => {
+            return {
+              id: item.id,
+              status: item.status,
+            };
+          }),
+          posts: posts ? posts.map((item) => item._id) : [],
+        });
+      } else if (user.__t === "agent") {
+        return res.json({
+          info: {
+            firstname: user.firstname,
+            lastname: user.lastname,
+            phone: user.phone,
+            bio: user.bio,
+            public_email: user.public_email,
+          },
+          credentials: {
+            role: "agent",
+          },
+          favorites: user.favorites.map((item) => {
+            return {
+              id: item.id,
+              status: item.status,
+            };
+          }),
+          posts: posts ? posts.map((item) => item._id) : [],
+        });
+      }
     }
   } catch (error) {
     console.log(error);
@@ -257,7 +311,12 @@ export const updateClient = async (req, res) => {
       credentials: {
         role: "client",
       },
-      favorites: user.favorites.map((item) => item.id),
+      favorites: user.favorites.map((item) => {
+        return {
+          id: item.id,
+          status: item.status,
+        };
+      }),
       posts: posts ? posts.map((item) => item._id) : [],
     });
   } catch (error) {
@@ -293,7 +352,12 @@ export const updateAgent = async (req, res) => {
       credentials: {
         role: "agent",
       },
-      favorites: user.favorites.map((item) => item.id),
+      favorites: user.favorites.map((item) => {
+        return {
+          id: item.id,
+          status: item.status,
+        };
+      }),
       posts: posts ? posts.map((item) => item._id) : [],
     });
   } catch (error) {
