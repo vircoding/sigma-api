@@ -8,79 +8,99 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  currency: {
-    type: String,
-    required: true,
-  },
   address: {
-    type: {
-      province: {
-        type: String,
-        required: true,
+    type: [
+      {
+        province: {
+          type: String,
+          required: true,
+        },
+        municipality: {
+          type: String,
+          required: true,
+        },
       },
-      municipality: {
-        type: String,
-        required: true,
-      },
-    },
+    ],
     required: true,
   },
   features: {
-    type: {
-      bed_room: {
-        type: Number,
-        required: true,
-        default: 0,
+    type: [
+      {
+        bed_room: {
+          type: Number,
+          required: true,
+        },
+        bath_room: {
+          type: Number,
+          required: true,
+        },
+        garage: {
+          type: Boolean,
+          required: true,
+        },
+        garden: {
+          type: Boolean,
+          required: true,
+        },
+        pool: {
+          type: Boolean,
+          required: true,
+        },
+        furnished: {
+          type: Boolean,
+          required: true,
+        },
       },
-      bath_room: {
-        type: Number,
-        required: true,
-        default: 0,
-      },
-      garage: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-      garden: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-      pool: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-      furnished: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-    },
-    required: true,
-  },
-  phone: {
-    type: String,
+    ],
     required: true,
   },
   description: {
     type: String,
     trim: true,
   },
-  date: {
-    type: Date,
+  contact_details: {
+    type: [
+      {
+        contact_type: {
+          type: String,
+          enum: ["phone", "whatsapp"],
+          required: true,
+        },
+        contact: {
+          type: {
+            code: {
+              type: String,
+              required: true,
+            },
+            phone: {
+              type: String,
+              required: true,
+            },
+          },
+          required: true,
+        },
+      },
+    ],
     required: true,
   },
-  visits_count: {
-    type: Number,
+  meta: {
+    type: {
+      date: {
+        type: Date,
+        required: true,
+      },
+      visits_count: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+      favorite_count: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+    },
     required: true,
-    default: 1,
-  },
-  favorite_count: {
-    type: Number,
-    required: true,
-    default: 0,
   },
 });
 

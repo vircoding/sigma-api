@@ -1,19 +1,20 @@
 import mongoose from "mongoose";
 import { Post } from "../models/Post.js";
 
-export const Sale = Post.discriminator(
-  "sale",
+export const Exchange = Post.discriminator(
+  "exchange",
   new mongoose.Schema({
-    amount_details: {
+    offer_details: {
       type: {
-        amount: {
+        offers: {
           type: Number,
+          enum: [1, 2, 3],
           required: true,
         },
-        currency: {
-          type: String,
-          enum: ["usd", "cup"],
-          required: true,
+        needs: {
+          type: Number,
+          enum: [1, 2, 3],
+          default: null,
         },
       },
       required: true,
