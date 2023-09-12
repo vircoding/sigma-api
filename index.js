@@ -6,6 +6,7 @@ import cors from "cors";
 import authRouter from "./routes/authRoute.js";
 import postsRouter from "./routes/postsRoute.js";
 import agentsRouter from "./routes/agentsRoute.js";
+import accountRouter from "./routes/accountRoute.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/agents", agentsRouter);
+app.use("/api/v1/account", accountRouter);
 
 // Starting Server
 const PORT = process.env.PORT || 5000;
