@@ -1,10 +1,12 @@
 import { Router } from "express";
+import { getAgents, getAgent, getAgentPosts } from "../controllers/agentsController.js";
+import { paramValidator } from "../middlewares/requestValidator.js";
 
 const router = Router();
 
 // GET
-router.get("/"); // Get All Agents
-router.get("/:id"); // Get Agent
-router.get("/:id/posts"); // Get Agent Posts
+router.get("/", getAgents); // Get All Agents
+router.get("/:id", paramValidator, getAgent); // Get Agent
+router.get("/:id/posts", paramValidator, getAgentPosts); // Get Agent Posts
 
 export default router;

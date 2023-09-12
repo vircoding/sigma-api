@@ -1,21 +1,38 @@
 import { Router } from "express";
+import { requireToken } from "../middlewares/requireToken.js";
+import {
+  getInfo,
+  getPosts,
+  getFavorites,
+  insertPost,
+  updateClient,
+  updateAgent,
+  updatePost,
+  addFavorite,
+} from "../controllers/accountController.js";
+import {
+  postValidator,
+  updateClientValidator,
+  updateAgentValidator,
+  paramValidator,
+} from "../middlewares/requestValidator.js";
 
 const router = Router();
 
 // GET
-router.get("/"); // Get Account Info
-router.get("/posts"); // Get Account Posts
-router.get("/favorites"); // Get Account Favorites
+router.get("/", requireToken, getInfo); // Get Info
+router.get("/posts", requireToken, getPosts); // Get Posts
+router.get("/favorites", requireToken, getFavorites); // Get Favorites
 
 // POST
-router.post("/"); // Insert Post
+router.post("/", requireToken, postValidator, insertPost); // Insert Post
 
 // PATCH
-router.patch("/client"); // Update Client
-router.patch("/agent"); // Update Agent
-router.patch("/post/:id"); // Update Post
+router.patch("/client", requireToken, updateClientValidator, updateClient); // Update Client
+router.patch("/agent", requireToken, updateAgentValidator, updateAgent); // Update Agent
+router.patch("/post/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
 
 // PUT
-router.put("/favorites/:id"); // Add To Favorites
+router.put("/favorites/:id", requireToken, paramValidator, addFavorite); // Add To Favorites
 
 export default router;
