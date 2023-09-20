@@ -8,72 +8,25 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  address: {
-    type: [
-      {
-        province: {
-          type: String,
-          required: true,
-        },
-        municipality: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    required: true,
-  },
-  features: {
-    type: [
-      {
-        bed_room: {
-          type: Number,
-          required: true,
-        },
-        bath_room: {
-          type: Number,
-          required: true,
-        },
-        garage: {
-          type: Boolean,
-          required: true,
-        },
-        garden: {
-          type: Boolean,
-          required: true,
-        },
-        pool: {
-          type: Boolean,
-          required: true,
-        },
-        furnished: {
-          type: Boolean,
-          required: true,
-        },
-      },
-    ],
-    required: true,
-  },
-  description: {
-    type: String,
-    trim: true,
-  },
   contact_details: {
     type: [
       {
         contact_type: {
           type: String,
           enum: ["phone", "whatsapp"],
+          trim: true,
           required: true,
         },
         contact: {
           type: {
             code: {
               type: String,
+              trim: true,
               required: true,
             },
             phone: {
               type: String,
+              trim: true,
               required: true,
             },
           },
