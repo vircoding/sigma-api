@@ -4,6 +4,40 @@ import bcrypt from "bcryptjs";
 const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
+  meta: {
+    type: {
+      connections: {
+        type: [
+          {
+            date: {
+              type: Date,
+              required: true,
+            },
+            ip: {
+              type: String,
+              required: true,
+            },
+            browser: {
+              type: String,
+              required: true,
+            },
+            device: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
+        required: true,
+      },
+      visits: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+    },
+    required: true,
+  },
+
   email: {
     type: String,
     required: true,
@@ -17,38 +51,23 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  connections: {
+  posts: {
     type: [
       {
-        date: {
-          type: Date,
-          required: true,
-        },
-        ip: {
-          type: String,
-          required: true,
-        },
-        browser: {
-          type: String,
-          required: true,
-        },
-        device: {
-          type: String,
+        post_id: {
+          type: Schema.Types.ObjectId,
+          ref: "Post",
           required: true,
         },
       },
     ],
     required: true,
-  },
-  visits: {
-    type: Number,
-    required: true,
-    default: 1,
+    default: [],
   },
   favorites: {
     type: [
       {
-        id: {
+        post_id: {
           type: Schema.Types.ObjectId,
           ref: "Post",
           required: true,

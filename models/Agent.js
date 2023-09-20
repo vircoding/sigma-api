@@ -4,29 +4,44 @@ import { User } from "../models/User.js";
 export const Agent = User.discriminator(
   "agent",
   new mongoose.Schema({
-    firstname: {
-      type: String,
+    info: {
+      type: {
+        firstname: {
+          type: String,
+          trim: true,
+          required: true,
+        },
+        lastname: {
+          type: String,
+          trim: true,
+          required: true,
+        },
+        bio: {
+          type: String,
+          trim: true,
+        },
+        public_email: {
+          type: String,
+          trim: true,
+          required: true,
+        },
+        contact: {
+          type: {
+            code: {
+              type: String,
+              trim: true,
+              required: true,
+            },
+            phone: {
+              type: String,
+              trim: true,
+              required: true,
+            },
+          },
+          required: true,
+        },
+      },
       required: true,
-      trim: true,
-    },
-    lastname: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    bio: {
-      type: String,
-      trim: true,
-    },
-    public_email: {
-      type: String,
-      trim: true,
-      lowercase: true,
     },
   })
 );
