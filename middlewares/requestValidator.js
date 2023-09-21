@@ -11,6 +11,7 @@ const valResults = (req, res, next) => {
   next();
 };
 
+const codeRegex = /^\+\d{1,3}$/;
 const phoneNumberRegex = /^\+\d+$/;
 
 export const clientValidator = [
@@ -46,10 +47,10 @@ export const agentValidator = [
     .trim()
     .isAlpha("es-ES", { ignore: " " })
     .isLength({ min: 1, max: 30 }),
-  body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
-  body("phone").custom((value) => {
-    const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'
-    if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
+  body("code", "Invalid Code").trim().matches(codeRegex),
+  body("phone").custom((value, { req }) => {
+    const parsedNumber = parsePhoneNumber(req.body.code + value);
+    if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
     return value;
   }),
   body("bio", "Invalid Bio").optional().trim().isLength({ max: 160 }),
@@ -84,11 +85,11 @@ export const updateAgentValidator = [
     .trim()
     .isAlpha("es-ES", { ignore: " " })
     .isLength({ min: 1, max: 30 }),
-  body("phone", "Invalid Phone Format").trim().matches(phoneNumberRegex),
-  body("phone").custom((value) => {
-    const phoneNumber = parsePhoneNumber(value); // Format expected: '+12133734253'
-    if (!phoneNumber.isValid()) throw new Error("Invalid Phone Number");
-    return value;
+  body("code", "Invalid Code").trim().matches(codeRegex),
+  body("phone").custom((value, { req }) => {
+    const parsedNumber = parsePhoneNumber(req.body.code + value);
+    console.log(parsedNumber.isValid());
+    if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
   }),
   body("bio", "Invalid Bio").optional().trim().isLength({ max: 160 }),
   body("public_email", "Invalid Public Email")

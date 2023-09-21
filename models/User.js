@@ -4,6 +4,19 @@ import bcrypt from "bcryptjs";
 const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+    lowercase: true,
+    index: { unique: true },
+  },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   meta: {
     type: {
       connections: {
@@ -32,24 +45,10 @@ const userSchema = new mongoose.Schema({
       visits: {
         type: Number,
         required: true,
-        default: 0,
+        default: 1,
       },
     },
     required: true,
-  },
-
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-    lowercase: true,
-    index: { unique: true },
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
   },
   posts: {
     type: [
