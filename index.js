@@ -27,9 +27,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/account", accountRouter);
 app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/agents", agentsRouter);
-app.use("/api/v1/account", accountRouter);
 
 // Starting Server
 const PORT = process.env.PORT || 5000;

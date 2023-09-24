@@ -8,25 +8,87 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
+  description: {
+    type: String,
+    default: "",
+  },
   contact_details: {
+    type: {
+      contact_types: {
+        type: {
+          phone: {
+            type: Boolean,
+            required: true,
+          },
+          whatsapp: {
+            type: Boolean,
+            required: true,
+          },
+        },
+        required: true,
+      },
+      contact: {
+        type: {
+          code: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+          phone: {
+            type: String,
+            trim: true,
+            required: true,
+          },
+        },
+        required: true,
+      },
+    },
+    required: true,
+  },
+  property_details: {
     type: [
       {
-        contact_type: {
-          type: String,
-          enum: ["phone", "whatsapp"],
-          trim: true,
-          required: true,
-        },
-        contact: {
+        address: {
           type: {
-            code: {
+            province: {
               type: String,
               trim: true,
               required: true,
             },
-            phone: {
+            municipality: {
               type: String,
               trim: true,
+              required: true,
+            },
+          },
+          required: true,
+        },
+        features: {
+          type: {
+            bed_room: {
+              type: Number,
+              enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+              required: true,
+            },
+            bath_room: {
+              type: Number,
+              enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+              required: true,
+            },
+            garage: {
+              type: Boolean,
+              required: true,
+            },
+            garden: {
+              type: Boolean,
+              required: true,
+            },
+            pool: {
+              type: Boolean,
+              required: true,
+            },
+            furnished: {
+              type: Boolean,
               required: true,
             },
           },

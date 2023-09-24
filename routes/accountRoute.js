@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { requireToken } from "../middlewares/requireToken.js";
 import {
+  getUser,
   getInfo,
   getPosts,
   getFavorites,
@@ -11,7 +12,6 @@ import {
   addFavorite,
 } from "../controllers/accountController.js";
 import {
-  postValidator,
   updateClientValidator,
   updateAgentValidator,
   paramValidator,
@@ -20,7 +20,9 @@ import {
 const router = Router();
 
 // GET
-router.get("/", requireToken, getInfo); // Get Info
+router.get("/", requireToken, getUser); // Get User
+router.get("/info", requireToken, getInfo); // Get Info
+router.get("/role", requireToken, getRole); // Get Info
 router.get("/posts", requireToken, getPosts); // Get Posts
 router.get("/favorites", requireToken, getFavorites); // Get Favorites
 
