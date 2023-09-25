@@ -3,26 +3,22 @@ import { requireToken } from "../middlewares/requireToken.js";
 import {
   getUser,
   getInfo,
+  getRole,
   getPosts,
   getFavorites,
   insertPost,
-  updateClient,
-  updateAgent,
+  updateUser,
   updatePost,
   addFavorite,
 } from "../controllers/accountController.js";
-import {
-  updateClientValidator,
-  updateAgentValidator,
-  paramValidator,
-} from "../middlewares/requestValidator.js";
+import { userValidator, postValidator, paramValidator } from "../middlewares/requestValidator.js";
 
 const router = Router();
 
 // GET
 router.get("/", requireToken, getUser); // Get User
 router.get("/info", requireToken, getInfo); // Get Info
-router.get("/role", requireToken, getRole); // Get Info
+router.get("/role", requireToken, getRole); // Get Role
 router.get("/posts", requireToken, getPosts); // Get Posts
 router.get("/favorites", requireToken, getFavorites); // Get Favorites
 
@@ -30,8 +26,7 @@ router.get("/favorites", requireToken, getFavorites); // Get Favorites
 router.post("/", requireToken, postValidator, insertPost); // Insert Post
 
 // PATCH
-router.patch("/client", requireToken, updateClientValidator, updateClient); // Update Client
-router.patch("/agent", requireToken, updateAgentValidator, updateAgent); // Update Agent
+router.patch("/", requireToken, userValidator, updateUser); // Update User
 router.patch("/post/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
 
 // PUT
