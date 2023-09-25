@@ -15,13 +15,11 @@ export const refresh = (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(403).json({ error: "Invalid Credentials" });
 
-    const passwordVal = await user.comparePassword(password);
+    const passwordVal = await user.comparePassword(req.body.password);
     if (!passwordVal) return res.status(403).json({ error: "Invalid Credentials" });
 
     const { token, expiresIn } = generateToken(user._id);
@@ -96,16 +94,13 @@ export const login = async (req, res) => {
 };
 
 export const register = async (req, res) => {
-  const { role, email, password, info, contact_details } = req.body;
-  let user;
-
   try {
-    if (role === "client") {
-      user = new Client({
-        email,
-        password,
+    if (req.body.role === "client") {
+      const client = new Client({
+        email: req.body.email,
+        password: req.body.password,
         info: {
-          username: info.username,
+          username: req.body.info.username,
         },
         meta: {
           connections: [
@@ -120,81 +115,84 @@ export const register = async (req, res) => {
           ],
         },
       });
-    } else if (role === "agent") {
-      user = new Agent({
-        email,
-        password,
-        info: {
-          firstname: info.firstname,
-          lastname: info.lastname,
-          bio: info.bio,
-        },
-        contact_details: {
-          public_email: public_email,
-          whatsapp: {
-            code: contact_details.whatsapp.code,
-            phone: contact_details.whatsapp.phone,
-          },
-        },
-        meta: {
-          connections: [
-            {
-              date: new Date(),
-              ip: req.ip,
-              browser: req.headers["user-agent"],
-              device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
-                ? "Mobile"
-                : "Desktop",
-            },
-          ],
-        },
-      });
-    }
 
-    const { token, expiresIn } = generateToken(user._id);
-    generateRefreshToken(user._id, res);
+      const { token, expiresIn } = generateToken(client._id);
+      generateRefreshToken(client._id, res);
 
-    await user.save();
+      await client.save();
 
-    if (role === "client") {
       return res.json({
         info: {
-          username: user.info.username,
+          username: client.info.username,
         },
         credentials: {
           token,
           expiresIn,
-          role: user.__t,
+          role: client.__t,
         },
-        posts: user.posts.map((item) => item.post_id),
-        favorites: user.favorites.map((item) => {
+        posts: client.posts.map((item) => item.post_id),
+        favorites: client.favorites.map((item) => {
           return {
             id: item.post_id,
             status: item.status,
           };
         }),
       });
-    } else if (role === "agent") {
-      return res.json({
+    } else if (req.body.role === "agent") {
+      const agent = new Agent({
+        email: req.body.email,
+        password: req.body.password,
         info: {
-          firstname: user.info.firstname,
-          lastname: user.info.lastname,
-          bio: user.info.bio,
+          firstname: req.body.info.firstname,
+          lastname: req.body.info.lastname,
+          bio: req.body.info.bio,
         },
         contact_details: {
-          public_email: user.contact_details.public_email,
+          public_email: req.body.contact_details.public_email,
           whatsapp: {
-            code: user.contact_details.whatsapp.code,
-            phone: user.contact_details.whatsapp.phone,
+            code: req.body.contact_details.whatsapp.code,
+            phone: req.body.contact_details.whatsapp.phone,
+          },
+        },
+        meta: {
+          connections: [
+            {
+              date: new Date(),
+              ip: req.ip,
+              browser: req.headers["user-agent"],
+              device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+                ? "Mobile"
+                : "Desktop",
+            },
+          ],
+        },
+      });
+
+      const { token, expiresIn } = generateToken(agent._id);
+      generateRefreshToken(agent._id, res);
+
+      await agent.save();
+
+      return res.json({
+        info: {
+          firstname: agent.info.firstname,
+          lastname: agent.info.lastname,
+          bio: agent.info.bio,
+        },
+        contact_details: {
+          public_email: agent.contact_details.public_email,
+          whatsapp: {
+            code: agent.contact_details.whatsapp.code,
+            phone: agent.contact_details.whatsapp.phone,
           },
         },
         credentials: {
           token,
           expiresIn,
-          role: user.__t,
+          role: agent.__t,
         },
-        posts: user.posts.map((item) => item.post_id),
-        favorites: user.favorites.map((item) => {
+        posts: agent.posts.map((item) => item.post_id),
+        favorites: agent.favorites.map((item) => {
           return {
             id: item.post_id,
             status: item.status,
