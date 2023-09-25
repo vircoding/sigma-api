@@ -2,9 +2,23 @@ import { checkSchema } from "express-validator";
 import parsePhoneNumber from "libphonenumber-js";
 import { provinceList, municipalityDict } from "./utils/provinceList.js";
 
+// Regex
 const codeRegex = /^\+\d{1,3}$/;
 
 // Custom Validators
+const validateRepassword = (value, { req }) => {
+  if (value !== req.body.password) throw new Error("Passwords doesn't match");
+
+  return value;
+};
+
+const validateWhatsappNumber = (value, { req }) => {
+  const parsedNumber = parsePhoneNumber(req.body.contact_details.whatsapp.code + value);
+  if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
+
+  return value;
+};
+
 const validatePhoneNumber = (value, { req }) => {
   const parsedNumber = parsePhoneNumber(req.body.contact_details.contact.code + value);
   if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
@@ -35,7 +49,116 @@ const validateNeedsCount = (value, { req }) => {
   return true;
 };
 
-const postSchema = checkSchema(
+// Validation Schemas
+export const userSchema = checkSchema(
+  {
+    email: {
+      exists: { bail: true, errorMessage: "Must Exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isEmail: { bail: true, errorMessage: "Must be an email" },
+      normalizeEmail: true,
+    },
+    password: {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isLength: { options: { min: 6, max: 16 }, errorMessage: "Invalid Length (6-16)" },
+    },
+    repassword: {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      custom: { options: validateRepassword, errorMessage: "Passwords must match" },
+    },
+    info: {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isObject: { errorMessage: "Must be an object" },
+    },
+  },
+  ["body"]
+);
+
+export const clientSchema = checkSchema(
+  {
+    "info.username": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isAlpha: {
+        options: ["es-ES", { ignore: " " }],
+        bail: true,
+        errorMessage: "Must be alphanumerical",
+      },
+      isLength: { options: { min: 3, max: 20 }, errorMessage: "Invalid Length (3-20)" },
+    },
+  },
+  ["body"]
+);
+
+export const agentSchema = checkSchema(
+  {
+    "info.firstname": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isAlpha: {
+        options: ["es-ES", { ignore: " " }],
+        bail: true,
+        errorMessage: "Must be alphanumerical",
+      },
+      isLength: { options: { min: 1, max: 20 }, errorMessage: "Invalid Length (1-20)" },
+    },
+    "info.lastname": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isAlpha: {
+        options: ["es-ES", { ignore: " " }],
+        bail: true,
+        errorMessage: "Must be alphanumerical",
+      },
+      isLength: { options: { min: 1, max: 20 }, errorMessage: "Invalid Length (1-20)" },
+    },
+    "info.bio": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      default: { options: "Sin biografía." },
+      isLength: { options: { max: 250 }, errorMessage: "Max Length" },
+    },
+    contact_details: {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isObject: { errorMessage: "Must be an object" },
+    },
+    "contact_details.public_email": {
+      exists: { bail: true, errorMessage: "Must Exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isEmail: { bail: true, errorMessage: "Must be an email" },
+      normalizeEmail: true,
+    },
+    "contact_details.whatsapp": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isObject: { errorMessage: "Must be an object" },
+    },
+    "contact_details.whatsapp.code": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      matches: { options: codeRegex, errorMessage: "Invalid Code" },
+    },
+    "contact_details.whatsapp.phone": {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      custom: { options: validateWhatsappNumber, errorMessage: "Error in custom" },
+    },
+  },
+  ["body"]
+);
+
+export const postSchema = checkSchema(
   {
     description: {
       exists: { bail: true, errorMessage: "Must exists" },
@@ -137,7 +260,7 @@ const postSchema = checkSchema(
   ["body"]
 );
 
-const saleSchema = checkSchema(
+export const saleSchema = checkSchema(
   {
     property_details: {
       exists: { bail: true, errorMessage: "Must exists" },
@@ -169,7 +292,7 @@ const saleSchema = checkSchema(
   ["body"]
 );
 
-const rentSchema = checkSchema(
+export const rentSchema = checkSchema(
   {
     property_details: {
       exists: { bail: true, errorMessage: "Must exists" },
@@ -207,7 +330,7 @@ const rentSchema = checkSchema(
   ["body"]
 );
 
-const exchangeSchema = checkSchema(
+export const exchangeSchema = checkSchema(
   {
     property_details: {
       exists: { bail: true, errorMessage: "Must exists" },

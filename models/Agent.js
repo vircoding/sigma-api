@@ -20,12 +20,17 @@ export const Agent = User.discriminator(
           type: String,
           trim: true,
         },
+      },
+      required: true,
+    },
+    contact_details: {
+      type: {
         public_email: {
           type: String,
           trim: true,
           required: true,
         },
-        contact: {
+        whatsapp: {
           type: {
             code: {
               type: String,
