@@ -14,7 +14,6 @@ export const refresh = (req, res) => {
   }
 };
 
-// Login
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -68,10 +67,12 @@ export const login = async (req, res) => {
           firstname: user.info.firstname,
           lastname: user.info.lastname,
           bio: user.info.bio,
-          public_email: user.info.public_email,
-          contact: {
-            code: user.info.contact.code,
-            phone: user.info.contact.phone,
+        },
+        contact_details: {
+          public_email: user.contact_details.public_email,
+          whatsapp: {
+            code: user.contact_details.whatsapp.code,
+            phone: user.contact_details.whatsapp.phone,
           },
         },
         credentials: {
@@ -94,122 +95,113 @@ export const login = async (req, res) => {
   }
 };
 
-// Register Client
-export const registerClient = async (req, res) => {
-  const { email, password, username } = req.body;
+export const register = async (req, res) => {
+  const { role, email, password, info, contact_details } = req.body;
+  let user;
+
   try {
-    const client = new Client({
-      email,
-      password,
-      meta: {
-        connections: [
-          {
-            date: new Date(),
-            ip: req.ip,
-            browser: req.headers["user-agent"],
-            device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
-              ? "Mobile"
-              : "Desktop",
+    if (role === "client") {
+      user = new Client({
+        email,
+        password,
+        info: {
+          username: info.username,
+        },
+        meta: {
+          connections: [
+            {
+              date: new Date(),
+              ip: req.ip,
+              browser: req.headers["user-agent"],
+              device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+                ? "Mobile"
+                : "Desktop",
+            },
+          ],
+        },
+      });
+    } else if (role === "agent") {
+      user = new Agent({
+        email,
+        password,
+        info: {
+          firstname: info.firstname,
+          lastname: info.lastname,
+          bio: info.bio,
+        },
+        contact_details: {
+          public_email: public_email,
+          whatsapp: {
+            code: contact_details.whatsapp.code,
+            phone: contact_details.whatsapp.phone,
           },
-        ],
-      },
-      info: {
-        username,
-      },
-    });
-
-    const { token, expiresIn } = generateToken(client.id);
-    generateRefreshToken(client.id, res);
-
-    await client.save();
-
-    return res.json({
-      info: {
-        username: client.info.username,
-      },
-      credentials: {
-        token,
-        expiresIn,
-        role: client.__t,
-      },
-      posts: client.posts.map((item) => item.post_id),
-      favorites: client.favorites.map((item) => {
-        return {
-          id: item.post_id,
-          status: item.status,
-        };
-      }),
-    });
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(403).json({ error: "User exists already" });
+        },
+        meta: {
+          connections: [
+            {
+              date: new Date(),
+              ip: req.ip,
+              browser: req.headers["user-agent"],
+              device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+                ? "Mobile"
+                : "Desktop",
+            },
+          ],
+        },
+      });
     }
-    console.log(error);
-    return res.status(500).json({ error: "Server error" });
-  }
-};
 
-// Register Agent
-export const registerAgent = async (req, res) => {
-  const { email, password, firstname, lastname, code, phone, bio, public_email } = req.body;
+    const { token, expiresIn } = generateToken(user._id);
+    generateRefreshToken(user._id, res);
 
-  try {
-    const agent = new Agent({
-      email,
-      password,
-      meta: {
-        connections: [
-          {
-            date: new Date(),
-            ip: req.ip,
-            browser: req.headers["user-agent"],
-            device: req.headers["user-agent"].match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
-              ? "Mobile"
-              : "Desktop",
+    await user.save();
+
+    if (role === "client") {
+      return res.json({
+        info: {
+          username: user.info.username,
+        },
+        credentials: {
+          token,
+          expiresIn,
+          role: user.__t,
+        },
+        posts: user.posts.map((item) => item.post_id),
+        favorites: user.favorites.map((item) => {
+          return {
+            id: item.post_id,
+            status: item.status,
+          };
+        }),
+      });
+    } else if (role === "agent") {
+      return res.json({
+        info: {
+          firstname: user.info.firstname,
+          lastname: user.info.lastname,
+          bio: user.info.bio,
+        },
+        contact_details: {
+          public_email: user.contact_details.public_email,
+          whatsapp: {
+            code: user.contact_details.whatsapp.code,
+            phone: user.contact_details.whatsapp.phone,
           },
-        ],
-      },
-      info: {
-        firstname,
-        lastname,
-        bio,
-        public_email,
-        contact: {
-          code,
-          phone,
         },
-      },
-    });
-
-    const { token, expiresIn } = generateToken(agent.id);
-    generateRefreshToken(agent.id, res);
-
-    await agent.save();
-
-    return res.json({
-      info: {
-        firstname: agent.info.firstname,
-        lastname: agent.info.lastname,
-        bio: agent.info.bio,
-        public_email: agent.info.public_email,
-        contact: {
-          code: agent.info.contact.code,
-          phone: agent.info.contact.phone,
+        credentials: {
+          token,
+          expiresIn,
+          role: user.__t,
         },
-      },
-      credentials: {
-        token,
-        expiresIn,
-        role: agent.__t,
-      },
-      posts: agent.posts.map((item) => item.post_id),
-      favorites: agent.favorites.map((item) => {
-        return {
-          id: item.post_id,
-          status: item.status,
-        };
-      }),
-    });
+        posts: user.posts.map((item) => item.post_id),
+        favorites: user.favorites.map((item) => {
+          return {
+            id: item.post_id,
+            status: item.status,
+          };
+        }),
+      });
+    }
   } catch (error) {
     if (error.code === 11000) {
       return res.status(403).json({ error: "User exists already" });

@@ -1,5 +1,7 @@
-import { body, validationResult, param } from "express-validator";
+import { body, param } from "express-validator";
+import valResult from "./valResult.js";
 import {
+  loginSchema,
   userSchema,
   clientSchema,
   agentSchema,
@@ -9,21 +11,15 @@ import {
   exchangeSchema,
 } from "../utils/valSchemas.js";
 
-// Validation Result
-const valResult = (req, res, next) => {
-  const result = validationResult(req);
-
-  if (!result.isEmpty()) {
-    return res.status(400).json({ error: result.array() });
-  }
-
-  next();
-};
-
 export const paramValidator = [
   param("id", "Invalid ID Format").trim().notEmpty().escape(),
   valResult,
 ];
+
+export const loginValidator = async (req, res, next) => {
+  await loginSchema.run(req);
+  await valResult(req, res, next);
+};
 
 export const userValidator = async (req, res, next) => {
   // Validating role

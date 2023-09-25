@@ -50,6 +50,25 @@ const validateNeedsCount = (value, { req }) => {
 };
 
 // Validation Schemas
+export const loginSchema = checkSchema(
+  {
+    email: {
+      exists: { bail: true, errorMessage: "Must Exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isEmail: { bail: true, errorMessage: "Must be an email" },
+      normalizeEmail: true,
+    },
+    password: {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isString: { bail: true, errorMessage: "Must be an string" },
+      trim: true,
+      isLength: { options: { min: 6, max: 16 }, errorMessage: "Invalid Length (6-16)" },
+    },
+  },
+  ["body"]
+);
+
 export const userSchema = checkSchema(
   {
     email: {
