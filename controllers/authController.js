@@ -2,6 +2,7 @@ import { User } from "../models/User.js";
 import { Client } from "../models/Client.js";
 import { Agent } from "../models/Agent.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
+import { formatUserRes } from "../utils/formatResponses.js";
 
 // Refresh
 export const refresh = (req, res) => {
@@ -41,52 +42,11 @@ export const login = async (req, res) => {
 
     await user.save();
 
-    if (user.__t === "client") {
-      return res.json({
-        info: {
-          username: user.info.username,
-        },
-        credentials: {
-          token,
-          expiresIn,
-          role: user.__t,
-        },
-        posts: user.posts.map((item) => item.post_id),
-        favorites: user.favorites.map((item) => {
-          return {
-            id: item.post_id,
-            status: item.status,
-          };
-        }),
-      });
-    } else if (user.__t === "agent") {
-      return res.json({
-        info: {
-          firstname: user.info.firstname,
-          lastname: user.info.lastname,
-          bio: user.info.bio,
-        },
-        contact_details: {
-          public_email: user.contact_details.public_email,
-          whatsapp: {
-            code: user.contact_details.whatsapp.code,
-            phone: user.contact_details.whatsapp.phone,
-          },
-        },
-        credentials: {
-          token,
-          expiresIn,
-          role: user.__t,
-        },
-        posts: user.posts.map((item) => item.post_id),
-        favorites: user.favorites.map((item) => {
-          return {
-            id: item.post_id,
-            status: item.status,
-          };
-        }),
-      });
-    }
+    const response = formatUserRes(user);
+    response.credentials.token = token;
+    response.credentials.expiresIn = expiresIn;
+
+    return res.json(response);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Server error" });
@@ -121,23 +81,11 @@ export const register = async (req, res) => {
 
       await client.save();
 
-      return res.json({
-        info: {
-          username: client.info.username,
-        },
-        credentials: {
-          token,
-          expiresIn,
-          role: client.__t,
-        },
-        posts: client.posts.map((item) => item.post_id),
-        favorites: client.favorites.map((item) => {
-          return {
-            id: item.post_id,
-            status: item.status,
-          };
-        }),
-      });
+      const response = formatUserRes(client);
+      response.credentials.token = token;
+      response.credentials.expiresIn = expiresIn;
+
+      return res.json(response);
     } else if (req.body.role === "agent") {
       const agent = new Agent({
         email: req.body.email,
@@ -173,32 +121,11 @@ export const register = async (req, res) => {
 
       await agent.save();
 
-      return res.json({
-        info: {
-          firstname: agent.info.firstname,
-          lastname: agent.info.lastname,
-          bio: agent.info.bio,
-        },
-        contact_details: {
-          public_email: agent.contact_details.public_email,
-          whatsapp: {
-            code: agent.contact_details.whatsapp.code,
-            phone: agent.contact_details.whatsapp.phone,
-          },
-        },
-        credentials: {
-          token,
-          expiresIn,
-          role: agent.__t,
-        },
-        posts: agent.posts.map((item) => item.post_id),
-        favorites: agent.favorites.map((item) => {
-          return {
-            id: item.post_id,
-            status: item.status,
-          };
-        }),
-      });
+      const response = formatUserRes(agent);
+      response.credentials.token = token;
+      response.credentials.expiresIn = expiresIn;
+
+      return res.json(response);
     }
   } catch (error) {
     if (error.code === 11000) {
