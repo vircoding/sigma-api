@@ -66,3 +66,22 @@ export const formatPostRes = (post) => {
 
   return response;
 };
+
+export const formatAgentRes = (agent) => {
+  return {
+    id: agent._id,
+    info: {
+      firstname: agent.info.firstname,
+      lastname: agent.info.lastname,
+      bio: agent.info.bio,
+    },
+    contact_details: {
+      public_email: agent.contact_details.public_email,
+      whatsapp: {
+        code: agent.contact_details.whatsapp.code,
+        phone: agent.contact_details.whatsapp.phone,
+      },
+    },
+    posts: agent.posts.map((item) => item.post_id),
+  };
+};

@@ -1,19 +1,24 @@
 import { Agent } from "../models/Agent.js";
-import { Post } from "../models/Post.js";
+import { formatAgentRes } from "../utils/formatResponses.js";
 
-export const getAgentInfo = async (req, res) => {
+export const getAgents = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
   try {
-    const { id } = req.params;
-    const agent = await Agent.findById(id);
-    if (!agent) return res.status(403).json({ error: "Agent not founded" });
+    const agents = await Agent.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total_agents = await Agent.find().countDocuments();
 
     return res.json({
-      uid: agent.uid,
-      firstname: agent.firstname,
-      lastname: agent.lastname,
-      phone: agent.phone,
-      bio: agent.bio,
-      public_email: agent.public_email,
+      agents: agents.map((item) => {
+        return formatAgentRes(item);
+      }),
+      page: total_agents === 0 ? 0 : page,
+      total_agents,
+      total_pages: Math.ceil(total_agents / limit),
     });
   } catch (error) {
     console.log(error);
@@ -21,25 +26,15 @@ export const getAgentInfo = async (req, res) => {
   }
 };
 
-export const getAgentPosts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-
+export const getAgent = async (req, res) => {
   try {
     const { id } = req.params;
-    const posts = await Post.find({ uid: id })
-      .skip((page - 1) * limit)
-      .limit(limit);
+    const agent = await Agent.findById(id);
+    if (!agent) return res.status(403).json({ error: "Agent not founded" });
 
-    const total_posts = await Post.find({ uid: id }).countDocuments();
-
-    return res.json({
-      posts,
-      page: total_posts === 0 ? 0 : page,
-      total_posts,
-      total_pages: Math.ceil(total_posts / limit),
-    });
+    return res.json(formatAgentRes(agent));
   } catch (error) {
+    if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Agent ID" });
     console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
