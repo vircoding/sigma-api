@@ -662,3 +662,25 @@ export const addFavorite = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+export const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ error: "Post not founded" });
+
+    if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
+
+    await post.deleteOne();
+
+    await User.updateMany({ "favorites.id": id }, { $set: { "favorites.$.status": "deleted" } });
+
+    const posts = await Post.find({ uid: req.uid });
+
+    return res.json({ posts: posts ? posts.map((item) => item._id) : [] });
+  } catch (error) {
+    if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
+    return res.status(500).json({ error: "Server error" });
+  }
+};

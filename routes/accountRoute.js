@@ -10,6 +10,7 @@ import {
   updateUser,
   updatePost,
   addFavorite,
+  deletePost,
 } from "../controllers/accountController.js";
 import { userValidator, postValidator, paramValidator } from "../middlewares/requestValidator.js";
 
@@ -31,5 +32,8 @@ router.patch("/post/:id", requireToken, paramValidator, postValidator, updatePos
 
 // PUT
 router.put("/favorites/:id", requireToken, paramValidator, addFavorite); // Add To Favorites
+
+// DELETE
+router.delete("/post/:id", requireToken, paramValidator, deletePost); // Delete Post
 
 export default router;
