@@ -1,6 +1,6 @@
 import { checkSchema } from "express-validator";
 import parsePhoneNumber from "libphonenumber-js";
-import { provinceList, municipalityDict } from "./utils/provinceList.js";
+import { provinceList, municipalityDict } from "./provinceList.js";
 
 // Regex
 const codeRegex = /^\+\d{1,3}$/;

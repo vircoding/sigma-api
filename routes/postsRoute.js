@@ -11,7 +11,7 @@ import { paramValidator } from "../middlewares/requestValidator.js";
 
 const router = Router();
 
-GET;
+// GET
 router.get("/", getPosts); // Get All Posts
 router.get("/sales", getSales); // Get All Sales
 router.get("/rents", getRents); // Get All Rents
@@ -22,7 +22,7 @@ router.get("/:id", paramValidator, getPost); // Get Post
 // router.get("/popular/rents", getPopularRents); // Get Popular Rents
 // router.get("/popular/exchanges", getPopularExchanges); // Get Popular Exchanges
 
-PUT;
+// PUT
 router.put("/:id", paramValidator, visitPost); // Visit Post
 
 export default router;

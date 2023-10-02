@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
 
-export default valResults = (req, res, next) => {
+const valResults = (req, res, next) => {
   const result = validationResult(req);
 
   if (!result.isEmpty()) {
@@ -9,3 +9,5 @@ export default valResults = (req, res, next) => {
 
   next();
 };
+
+export default valResults;

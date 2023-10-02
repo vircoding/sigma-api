@@ -1,4 +1,23 @@
-export const provinceList = {
+export const provinceList = [
+  "Pinar del Rio",
+  "Artemisa",
+  "La Habana",
+  "Mayabeque",
+  "Matanzas",
+  "Villa Clara",
+  "Cienfuegos",
+  "Sancti Spíritus",
+  "Ciego de Ávila",
+  "Camagüey",
+  "Las Tunas",
+  "Holguín",
+  "Granma",
+  "Santiago de Cuba",
+  "Guantánamo",
+  "Isla de la Juventud",
+];
+
+export const municipalityDict = {
   "Pinar del Rio": [
     "Sandino",
     "Mantua",

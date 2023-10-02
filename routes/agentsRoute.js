@@ -4,7 +4,7 @@ import { paramValidator } from "../middlewares/requestValidator.js";
 
 const router = Router();
 
-GET;
+// GET
 router.get("/", getAgents); // Get All Agents
 router.get("/:id", paramValidator, getAgent); // Get Agent
 // router.get("/:id/posts", paramValidator, getAgentPosts); // Get Agent Posts
