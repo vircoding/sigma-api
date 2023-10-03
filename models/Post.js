@@ -107,15 +107,18 @@ const postSchema = new Schema({
       visits_count: {
         type: Number,
         required: true,
-        default: 0,
       },
       favorite_count: {
         type: Number,
         required: true,
-        default: 0,
       },
     },
     required: true,
+    default: {
+      date: new Date(),
+      visits_count: 0,
+      favorite_count: 0,
+    },
   },
 });
 

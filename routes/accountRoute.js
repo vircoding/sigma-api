@@ -24,16 +24,16 @@ router.get("/posts", requireToken, getPosts); // Get Posts
 router.get("/favorites", requireToken, getFavorites); // Get Favorites
 
 // POST
-router.post("/", requireToken, postValidator, insertPost); // Insert Post
+router.post("/posts", requireToken, postValidator, insertPost); // Insert Post
 
 // PATCH
 router.patch("/", requireToken, userValidator, updateUser); // Update User
-router.patch("/post/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
+router.patch("/posts/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
 
 // PUT
 router.put("/favorites/:id", requireToken, paramValidator, addFavorite); // Add To Favorites
 
 // DELETE
-router.delete("/post/:id", requireToken, paramValidator, deletePost); // Delete Post
+router.delete("/posts/:id", requireToken, paramValidator, deletePost); // Delete Post
 
 export default router;

@@ -1,24 +1,32 @@
 export const formatUserRes = (user) => {
   const response = {};
 
-  response.credentials.role = user.__t;
+  response.credentials = {
+    role: user.__t,
+  };
   response.posts = user.posts.map((item) => item.post_id);
   response.favorites = user.favorites.map((item) => {
     return {
-      id: item.post_id,
+      post_id: item.post_id,
       status: item.status,
     };
   });
 
   if (user.__t === "client") {
-    response.info.username = user.info.username;
+    response.info = { username: user.info.username };
   } else if (user.__t === "agent") {
-    response.info.firstname = user.info.firstname;
-    response.info.lastname = user.info.lastname;
-    response.info.bio = user.info.bio;
-    response.contact_details.public_email = user.contact_details.public_email;
-    response.contact_details.whatsapp.code = user.contact_details.whatsapp.code;
-    response.contact_details.whatsapp.phone = user.contact_details.whatsapp.phone;
+    response.info = {
+      firstname: user.info.firstname,
+      lastname: user.info.lastname,
+      bio: user.info.bio,
+    };
+    response.contact_details = {
+      public_email: user.contact_details.public_email,
+      whatsapp: {
+        code: user.contact_details.whatsapp.code,
+        phone: user.contact_details.whatsapp.phone,
+      },
+    };
   }
 
   return response;
@@ -29,11 +37,18 @@ export const formatPostRes = (post) => {
 
   response.type = post.__t;
   response.uid = post.uid;
+  response.id = post._id;
   response.description = post.description;
-  response.contact_details.contact_types.phone = post.contact_details.contact_types.phone;
-  response.contact_details.contact_types.whatsapp = post.contact_details.contact_types.whatsapp;
-  response.contact_details.contact.code = post.contact_details.contact.code;
-  response.contact_details.contact.phone = post.contact_details.contact.phone;
+  response.contact_details = {
+    contact_types: {
+      phone: post.contact_details.contact_types.phone,
+      whatsapp: post.contact_details.contact_types.whatsapp,
+    },
+    contact: {
+      code: post.contact_details.contact.code,
+      phone: post.contact_details.contact.phone,
+    },
+  };
   response.property_details = post.property_details.map((item) => {
     return {
       address: {
@@ -52,16 +67,24 @@ export const formatPostRes = (post) => {
   });
 
   if (post.__t === "sale") {
-    response.amount_details.amount = post.amount_details.amount;
-    response.amount_details.currency = post.amount_details.currency;
+    response.amount_details = {
+      amount: post.amount_details.amount,
+      currency: post.amount_details.currency,
+    };
   } else if (post.__t === "rent") {
-    response.amount_details.amount = post.amount_details.amount;
-    response.amount_details.currency = post.amount_details.currency;
-    response.amount_details.frequency = post.amount_details.frequency;
+    response.amount_details = {
+      amount: post.amount_details.amount,
+      currency: post.amount_details.currency,
+      frequency: post.amount_details.frequency,
+    };
   } else if (post.__t === "exchange") {
-    response.offer_details.offers = post.offer_details.offers;
-    response.offer_details.needs.enable = post.offer_details.needs.enable;
-    response.offer_details.needs.count = post.offer_details.needs.count;
+    response.offer_details = {
+      offers: post.offer_details.offers,
+      needs: {
+        enable: post.offer_details.needs.enable,
+        count: post.offer_details.needs.count,
+      },
+    };
   }
 
   return response;

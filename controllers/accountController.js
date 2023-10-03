@@ -38,10 +38,10 @@ export const getInfo = async (req, res) => {
           bio: user.info.bio,
         },
         contact_details: {
-          public_email: user.info.public_email,
+          public_email: user.contact_details.public_email,
           whatsapp: {
-            code: user.info.contact.code,
-            phone: user.info.contact.phone,
+            code: user.contact_details.whatsapp.code,
+            phone: user.contact_details.whatsapp.phone,
           },
         },
       });
@@ -91,7 +91,7 @@ export const getFavorites = async (req, res) => {
     return res.json({
       favorites: user.favorites.map((item) => {
         return {
-          id: item.post_id,
+          post_id: item.post_id,
           status: item.status,
         };
       }),
@@ -105,6 +105,9 @@ export const getFavorites = async (req, res) => {
 // Insert Post
 export const insertPost = async (req, res) => {
   try {
+    const user = await User.findById(req.uid);
+    if (!user) return res.status(404).json({ error: "User not founded" });
+
     if (req.body.type === "sale") {
       const sale = new Sale({
         uid: req.uid,
@@ -143,7 +146,11 @@ export const insertPost = async (req, res) => {
 
       await sale.save();
 
-      res.json(formatPostRes(sale));
+      // Update User Posts Array
+      user.posts.push({ post_id: sale._id });
+      await user.save();
+
+      return res.json(formatPostRes(sale));
     } else if (req.body.type === "rent") {
       const rent = new Rent({
         uid: req.uid,
@@ -183,7 +190,11 @@ export const insertPost = async (req, res) => {
 
       await rent.save();
 
-      res.json(formatPostRes(rent));
+      // Update User Posts Array
+      user.posts.push({ post_id: rent._id });
+      await user.save();
+
+      return res.json(formatPostRes(rent));
     } else if (req.body.type === "exchange") {
       const exchange = new Exchange({
         uid: req.uid,
@@ -225,7 +236,11 @@ export const insertPost = async (req, res) => {
 
       await exchange.save();
 
-      res.json(formatPostRes(exchange));
+      // Update User Posts Array
+      user.posts.push({ post_id: exchange._id });
+      await user.save();
+
+      return res.json(formatPostRes(exchange));
     }
   } catch (error) {
     console.log(error);
@@ -238,7 +253,7 @@ export const updateUser = async (req, res) => {
     const user = await User.findById(req.uid);
     if (!user) return res.status(404).json({ error: "User not founded" });
 
-    if (user.__t !== req.body.role) return res.status(400).json({ errror: "Roles dont match" });
+    if (user.__t !== req.body.role) return res.status(400).json({ errror: "Roles don't match" });
 
     if (user.__t === "client") {
       user.info.username = req.body.info.username;
@@ -267,6 +282,8 @@ export const updatePost = async (req, res) => {
 
     if (!post) return res.status(404).json({ error: "Post not founded" });
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
+
+    if (post.__t !== req.body.type) return res.status(400).json({ error: "Types don't match" });
 
     post.description = req.body.description;
     post.contact_details.contact_types.phone = req.body.contact_details.contact_types.phone;
@@ -319,21 +336,21 @@ export const addFavorite = async (req, res) => {
     const user = await User.findById(req.uid);
     const { id } = req.params;
 
+    const post = await Post.findById(id);
     if (remove) {
-      const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
-      user.favorites = newFavorites;
-
-      await user.save();
+      if (!post) {
+        const newFavorites = user.favorites.filter((item) => item.post_id.toString() !== id);
+        user.favorites = newFavorites;
+        await user.save();
+      } else return res.status(400).json({ error: "Post is active" });
     } else {
-      const post = await Post.findById(id);
-
       if (!post) return res.status(404).json({ error: "Post not founded" });
 
-      if (!user.favorites.find((item) => item.id.toString() === id)) {
-        user.favorites.push({ id });
+      if (!user.favorites.find((item) => item.post_id.toString() === id)) {
+        user.favorites.push({ post_id: id });
         post.favorite_count += 1;
       } else {
-        const newFavorites = user.favorites.filter((item) => item.id.toString() !== id);
+        const newFavorites = user.favorites.filter((item) => item.post_id.toString() !== id);
         user.favorites = newFavorites;
         post.favorite_count -= 1;
       }
@@ -344,7 +361,7 @@ export const addFavorite = async (req, res) => {
     res.json({
       favorites: user.favorites.map((item) => {
         return {
-          id: item.id,
+          post_id: item.post_id,
           status: item.status,
         };
       }),
@@ -360,18 +377,26 @@ export const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findById(id);
-
     if (!post) return res.status(404).json({ error: "Post not founded" });
+
+    const user = await User.findById(req.uid);
+    if (!user) return res.status(404).json({ error: "User not founded" });
 
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
 
     await post.deleteOne();
 
-    await User.updateMany({ "favorites.id": id }, { $set: { "favorites.$.status": "deleted" } });
+    await User.updateMany(
+      { "favorites.post_id": id },
+      { $set: { "favorites.$.status": "deleted" } }
+    );
 
-    const posts = await Post.find({ uid: req.uid });
+    // Updating User Posts
+    const newPosts = user.posts.filter((item) => item.post_id.toString() !== id);
+    user.posts = newPosts;
+    await user.save();
 
-    return res.json({ posts: posts ? posts.map((item) => item._id) : [] });
+    return res.json({ posts: user.posts.map((item) => item.post_id) });
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     console.log(error);
