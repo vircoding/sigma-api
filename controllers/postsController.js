@@ -2,7 +2,6 @@ import { Post } from "../models/Post.js";
 import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
-import { User } from "../models/User.js";
 import { formatPostRes } from "../utils/formatResponses.js";
 
 export const getPosts = async (req, res) => {
@@ -106,33 +105,12 @@ export const getExchanges = async (req, res) => {
 };
 
 export const getPost = async (req, res) => {
-  const author = Boolean(req.query.author) || false;
-
   try {
     const { id } = req.params;
     const post = await Post.findById(id);
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
-    const response = formatPostRes(post);
-
-    if (author) {
-      const user = await User.findOne({ _id: post.uid });
-      if (!user) return res.status(403).json({ error: "Author not founded" });
-
-      response.author.role = user.__t;
-      response.author.id = user._id;
-
-      if (user.__t === "agent") {
-        response.author.info.firstname = user.info.firstname;
-        response.author.info.lastname = user.info.lastname;
-        response.author.info.bio = user.info.bio;
-        response.author.contact_details.public_email = user.contact_details.public_email;
-        response.author.contact_details.whatsapp.code = user.contact_details.whatsapp.code;
-        response.author.contact_details.whatsapp.phone = user.contact_details.whatsapp.phone;
-      }
-    }
-
-    return res.json(response);
+    return res.json(formatPostRes(post));
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     console.log(error);
