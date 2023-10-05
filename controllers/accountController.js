@@ -150,7 +150,7 @@ export const insertPost = async (req, res) => {
       user.posts.push({ post_id: sale._id });
       await user.save();
 
-      return res.json(formatPostRes(sale));
+      return res.json({ post: formatPostRes(sale), posts: user.posts.map((item) => item.post_id) });
     } else if (req.body.type === "rent") {
       const rent = new Rent({
         uid: req.uid,
@@ -194,7 +194,7 @@ export const insertPost = async (req, res) => {
       user.posts.push({ post_id: rent._id });
       await user.save();
 
-      return res.json(formatPostRes(rent));
+      return res.json({ post: formatPostRes(rent), posts: user.posts.map((item) => item.post_id) });
     } else if (req.body.type === "exchange") {
       const exchange = new Exchange({
         uid: req.uid,
@@ -240,7 +240,10 @@ export const insertPost = async (req, res) => {
       user.posts.push({ post_id: exchange._id });
       await user.save();
 
-      return res.json(formatPostRes(exchange));
+      return res.json({
+        post: formatPostRes(exchange),
+        posts: user.posts.map((item) => item.post_id),
+      });
     }
   } catch (error) {
     console.log(error);
