@@ -10,6 +10,6 @@ router.get("/", requireRefreshToken, refresh); // Refresh
 
 // POST
 router.post("/login", loginValidator, login); // Login
-router.post("/register", userValidator, register); // Register Client
+router.post("/register", userValidator, register); // Register
 
 export default router;
