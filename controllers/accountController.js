@@ -333,30 +333,29 @@ export const updatePost = async (req, res) => {
 };
 
 export const addFavorite = async (req, res) => {
-  const remove = Boolean(req.query.remove) || false;
-
   try {
-    const user = await User.findById(req.uid);
     const { id } = req.params;
 
+    const user = await User.findById(req.uid);
+    if (!user) return res.status(404).json({ error: "User not founded" });
+
     const post = await Post.findById(id);
-    if (remove) {
-      if (!post) {
-        const newFavorites = user.favorites.filter((item) => item.post_id.toString() !== id);
-        user.favorites = newFavorites;
-        await user.save();
-      } else return res.status(400).json({ error: "Post is active" });
+
+    if (user.favorites.find((item) => item.post_id.toString() === id)) {
+      const newFavorites = user.favorites.filter((item) => item.post_id.toString() !== id);
+      user.favorites = newFavorites;
+
+      await user.save();
+
+      if (post) {
+        post.meta.favorite_count -= 1;
+        await post.save();
+      }
     } else {
       if (!post) return res.status(404).json({ error: "Post not founded" });
+      user.favorites.push({ post_id: id });
+      post.favorite_count += 1;
 
-      if (!user.favorites.find((item) => item.post_id.toString() === id)) {
-        user.favorites.push({ post_id: id });
-        post.favorite_count += 1;
-      } else {
-        const newFavorites = user.favorites.filter((item) => item.post_id.toString() !== id);
-        user.favorites = newFavorites;
-        post.favorite_count -= 1;
-      }
       await user.save();
       await post.save();
     }
