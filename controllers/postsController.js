@@ -138,7 +138,7 @@ export const visitPost = async (req, res) => {
   }
 };
 
-export const getUserPosts = async () => {
+export const getUserPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const posts = [];
@@ -169,7 +169,7 @@ export const getUserPosts = async () => {
   }
 };
 
-export const getUserFavorites = async () => {
+export const getUserFavorites = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const favorites = [];
@@ -204,7 +204,7 @@ export const getUserFavorites = async () => {
   }
 };
 
-export const getPopularPosts = async () => {
+export const getPopularPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
@@ -234,7 +234,7 @@ export const getPopularPosts = async () => {
   }
 };
 
-export const getPopularSales = async () => {
+export const getPopularSales = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
@@ -264,7 +264,7 @@ export const getPopularSales = async () => {
   }
 };
 
-export const getPopularRents = async () => {
+export const getPopularRents = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
@@ -294,7 +294,7 @@ export const getPopularRents = async () => {
   }
 };
 
-export const getPopularExchanges = async () => {
+export const getPopularExchanges = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
