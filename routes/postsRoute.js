@@ -9,6 +9,9 @@ import {
   getUserPosts,
   getUserFavorites,
   getPopularPosts,
+  getPopularSales,
+  getPopularRents,
+  getPopularExchanges,
   visitPost,
 } from "../controllers/postsController.js";
 import { paramValidator } from "../middlewares/requestValidator.js";
