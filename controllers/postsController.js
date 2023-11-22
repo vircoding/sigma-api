@@ -181,16 +181,6 @@ export const getUserFavorites = async (req, res) => {
     const user = await User.findById(req.uid);
     if (!user) return res.status(404).json({ error: "User not founded" });
 
-    user.favorites.slice((page - 1) * limit, page * limit).map(async (item) => {
-      if (item.status === "active") {
-        const post = await Post.findById(item.post_id);
-        if (!post) return res.status(404).json({ error: "Post not founded", post_id: item });
-        favorites.push(post);
-      } else {
-        favorites.push({ id: item.post_id });
-      }
-    });
-
     for (const item of user.favorites.slice((page - 1) * limit, page * limit)) {
       if (item.status === "active") {
         const post = await Post.findById(item.post_id.toString());
