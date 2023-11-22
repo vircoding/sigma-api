@@ -141,17 +141,20 @@ export const visitPost = async (req, res) => {
 export const getUserPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const posts = [];
   try {
+    const posts = [];
+
+    // Finding User
     const user = await User.findById(req.uid);
     if (!user) return res.status(404).json({ error: "User not founded" });
 
-    user.posts.slice((page - 1) * limit, page * limit).map(async (item) => {
-      const post = await Post.findById(item);
+    // Finding and pushing Posts
+    for (const item of user.posts.slice((page - 1) * limit, page * limit)) {
+      const post = await Post.findById(item.post_id.toString());
 
-      if (!post) return res.status(404).json({ error: "Post not founded", post_id: item });
-      posts.push(post);
-    });
+      if (post) posts.push(post);
+      else posts.push({});
+    }
 
     const total_posts = user.posts.length;
 
@@ -172,8 +175,9 @@ export const getUserPosts = async (req, res) => {
 export const getUserFavorites = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const favorites = [];
   try {
+    const favorites = [];
+
     const user = await User.findById(req.uid);
     if (!user) return res.status(404).json({ error: "User not founded" });
 
@@ -186,6 +190,17 @@ export const getUserFavorites = async (req, res) => {
         favorites.push({ id: item.post_id });
       }
     });
+
+    for (const item of user.favorites.slice((page - 1) * limit, page * limit)) {
+      if (item.status === "active") {
+        const post = await Post.findById(item.post_id.toString());
+
+        if (post) favorites.push(post);
+        else favorites.push({});
+      } else {
+        favorites.push({ id: item.post_id });
+      }
+    }
 
     const total_favorites = user.favorites.length;
 

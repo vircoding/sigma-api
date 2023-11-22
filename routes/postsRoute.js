@@ -24,7 +24,7 @@ router.get("/sales", getSales); // Get All Sales
 router.get("/rents", getRents); // Get All Rents
 router.get("/exchanges", getExchanges); // Get All Exchanges
 router.get("/:id", paramValidator, getPost); // Get Post
-router.get("/user", requireToken, getUserPosts); // Get User Posts
+router.get("/user/posts", requireToken, getUserPosts); // Get User Posts
 router.get("/user/favorites", requireToken, getUserFavorites); // Get User Favorites
 router.get("/popular", getPopularPosts); // Get All Popular
 router.get("/popular/sales", getPopularSales); // Get Popular Sales
