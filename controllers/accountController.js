@@ -342,8 +342,7 @@ export const addFavorite = async (req, res) => {
     const post = await Post.findById(id);
 
     if (user.favorites.find((item) => item.post_id.toString() === id)) {
-      const newFavorites = user.favorites.filter((item) => item.post_id.toString() !== id);
-      user.favorites = newFavorites;
+      user.favorites = user.favorites.filter((item) => item.post_id.toString() !== id);
 
       await user.save();
 
