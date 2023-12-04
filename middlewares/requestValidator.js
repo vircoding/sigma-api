@@ -50,6 +50,32 @@ export const userValidator = async (req, res, next) => {
   await valResult(req, res, next);
 };
 
+export const updateUserValidator = async (req, res, next) => {
+  // Validating role
+  const typeResult = await body("role")
+    .exists()
+    .bail()
+    .withMessage("CHAIN - Must exists")
+    .isString()
+    .bail()
+    .withMessage("CHAIN - Must be an string")
+    .trim()
+    .isIn(["client", "agent"])
+    .withMessage("CHAIN - Invalid value")
+    .run(req);
+
+  if (typeResult.errors.length > 0) {
+    return res.status(400).json({ error: typeResult.errors });
+  } else {
+    // General Post Validations
+    await updateUserSchema.run(req);
+
+    // Validation Switch
+    if (req.body.role === "client") await clientSchema.run(req);
+    else if (req.body.role === "agent") await agentSchema.run(req);
+  }
+};
+
 export const postValidator = async (req, res, next) => {
   // Validating type
   const typeResult = await body("type")

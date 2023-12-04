@@ -12,7 +12,11 @@ import {
   addFavorite,
   deletePost,
 } from "../controllers/accountController.js";
-import { userValidator, postValidator, paramValidator } from "../middlewares/requestValidator.js";
+import {
+  updateUserValidator,
+  postValidator,
+  paramValidator,
+} from "../middlewares/requestValidator.js";
 
 const router = Router();
 
@@ -27,7 +31,7 @@ router.get("/favorites", requireToken, getFavorites); // Get Favorites
 router.post("/posts", requireToken, postValidator, insertPost); // Insert Post
 
 // PATCH
-router.patch("/", requireToken, userValidator, updateUser); // Update User
+router.patch("/", requireToken, updateUserValidator, updateUser); // Update User
 router.patch("/posts/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
 
 // PUT
