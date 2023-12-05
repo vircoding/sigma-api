@@ -98,12 +98,15 @@ export const userSchema = checkSchema(
   ["body"]
 );
 
-export const updateUserSchema = checkSchema({
-  info: {
-    exists: { bail: true, errorMessage: "Must exists" },
-    isObject: { errorMessage: "Must be an object" },
+export const updateUserSchema = checkSchema(
+  {
+    info: {
+      exists: { bail: true, errorMessage: "Must exists" },
+      isObject: { errorMessage: "Must be an object" },
+    },
   },
-});
+  ["body"]
+);
 
 export const clientSchema = checkSchema(
   {

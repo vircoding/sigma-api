@@ -75,6 +75,9 @@ export const updateUserValidator = async (req, res, next) => {
     if (req.body.role === "client") await clientSchema.run(req);
     else if (req.body.role === "agent") await agentSchema.run(req);
   }
+
+  // Validation Result
+  await valResult(req, res, next);
 };
 
 export const postValidator = async (req, res, next) => {

@@ -252,6 +252,7 @@ export const insertPost = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
+  console.log("here");
   try {
     const user = await User.findById(req.uid);
     if (!user) return res.status(404).json({ error: "User not founded" });
