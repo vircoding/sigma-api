@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { requireRefreshToken } from "../middlewares/requireRefreshToken.js";
 import { loginValidator, userValidator } from "../middlewares/requestValidator.js";
-import { refresh, login, register } from "../controllers/authController.js";
+import { refresh, logout, login, register } from "../controllers/authController.js";
 
 const router = Router();
 
