@@ -15,6 +15,22 @@ export const refresh = (req, res) => {
   }
 };
 
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      domain: "sigma-api-ehki.onrender.com",
+      path: "/",
+    });
+    res.json({ ok: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });

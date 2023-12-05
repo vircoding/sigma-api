@@ -7,6 +7,7 @@ const router = Router();
 
 // GET
 router.get("/", requireRefreshToken, refresh); // Refresh
+router.get("/logout", logout);
 
 // POST
 router.post("/login", loginValidator, login); // Login
