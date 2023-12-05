@@ -3,6 +3,7 @@ import valResult from "./valResult.js";
 import {
   loginSchema,
   userSchema,
+  updateUserSchema,
   clientSchema,
   agentSchema,
   postSchema,
