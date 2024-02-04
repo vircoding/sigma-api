@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import { requireToken } from "../middlewares/requireToken.js";
 import {
   getPosts,
