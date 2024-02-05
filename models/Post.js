@@ -8,6 +8,10 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
+  images: {
+    type: [String],
+    required: true,
+  },
   description: {
     type: String,
     default: "",

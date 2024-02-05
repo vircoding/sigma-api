@@ -18,6 +18,7 @@ import {
   postValidator,
   paramValidator,
 } from "../middlewares/requestValidator.js";
+import { parsePostReq } from "../middlewares/parseReq.js";
 import { saveImage } from "../utils/saveImage.js";
 
 const router = Router();
@@ -31,14 +32,22 @@ router.get("/posts", requireToken, getPosts); // Get Posts
 router.get("/favorites", requireToken, getFavorites); // Get Favorites
 
 // POST
-router.post("/posts", requireToken, postValidator, uploads.single("image"), insertPost); // Insert Post
-router.post("/posts/images", requireToken, uploads.array("images", 10), (req, res) => {
-  req.files.map(saveImage);
-  const urls = req.files.map((item) => {
-    return `https://sigma-api-ehki.onrender.com/uploads/${item.originalname}`;
-  });
-  res.json({ urls });
-});
+router.post(
+  "/posts",
+  /*requireToken, */
+  uploads.array("images", 10),
+  parsePostReq,
+  postValidator,
+  insertPost
+);
+// router.post("/posts", requireToken, postValidator, uploads.single("image"), insertPost); // Insert Post
+// router.post("/posts/images", requireToken, uploads.array("images", 10), (req, res) => {
+//   req.files.map(saveImage);
+//   const urls = req.files.map((item) => {
+//     return `https://sigma-api-ehki.onrender.com/uploads/${item.originalname}`;
+//   });
+//   res.json({ urls });
+// });
 
 // PATCH
 router.patch("/", requireToken, updateUserValidator, updateUser); // Update User

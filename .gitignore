@@ -1,5 +1,6 @@
 # Avoid dependencies folder
 node_modules
+uploads
 
 # Avoid environment variables
 .env

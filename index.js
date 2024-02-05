@@ -10,7 +10,7 @@ import accountRouter from "./routes/accountRoute.js";
 
 const app = express();
 
-const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2];
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2, "http://localhost:5173"];
 
 // Middlewares
 app.use(

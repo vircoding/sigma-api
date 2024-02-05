@@ -4,6 +4,7 @@ import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
 import { formatUserRes, formatPostRes } from "../utils/formatResponses.js";
+import { saveImage } from "../utils/saveImage.js";
 
 // Get User
 export const getUser = async (req, res) => {
@@ -102,7 +103,155 @@ export const getFavorites = async (req, res) => {
   }
 };
 
-// Insert Post
+// OLD Insert Post
+// export const OLDinsertPost = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.uid);
+//     if (!user) return res.status(404).json({ error: "User not founded" });
+
+//     if (req.body.type === "sale") {
+//       const sale = new Sale({
+//         uid: req.uid,
+//         description: req.body.description,
+//         contact_details: {
+//           contact_types: {
+//             phone: req.body.contact_details.contact_types.phone,
+//             whatsapp: req.body.contact_details.contact_types.whatsapp,
+//           },
+//           contact: {
+//             code: req.body.contact_details.contact.code,
+//             phone: req.body.contact_details.contact.phone,
+//           },
+//         },
+//         property_details: req.body.property_details.map((item) => {
+//           return {
+//             address: {
+//               province: item.address.province,
+//               municipality: item.address.municipality,
+//             },
+//             features: {
+//               bed_room: item.features.bed_room,
+//               bath_room: item.features.bath_room,
+//               garage: item.features.garage,
+//               garden: item.features.garden,
+//               pool: item.features.pool,
+//               furnished: item.features.furnished,
+//             },
+//           };
+//         }),
+//         amount_details: {
+//           amount: req.body.amount_details.amount,
+//           currency: req.body.amount_details.currency,
+//         },
+//       });
+
+//       await sale.save();
+
+//       // Update User Posts Array
+//       user.posts.push({ post_id: sale._id });
+//       await user.save();
+
+//       return res.json({ post: formatPostRes(sale), posts: user.posts.map((item) => item.post_id) });
+//     } else if (req.body.type === "rent") {
+//       const rent = new Rent({
+//         uid: req.uid,
+//         description: req.body.description,
+//         contact_details: {
+//           contact_types: {
+//             phone: req.body.contact_details.contact_types.phone,
+//             whatsapp: req.body.contact_details.contact_types.whatsapp,
+//           },
+//           contact: {
+//             code: req.body.contact_details.contact.code,
+//             phone: req.body.contact_details.contact.phone,
+//           },
+//         },
+//         property_details: req.body.property_details.map((item) => {
+//           return {
+//             address: {
+//               province: item.address.province,
+//               municipality: item.address.municipality,
+//             },
+//             features: {
+//               bed_room: item.features.bed_room,
+//               bath_room: item.features.bath_room,
+//               garage: item.features.garage,
+//               garden: item.features.garden,
+//               pool: item.features.pool,
+//               furnished: item.features.furnished,
+//             },
+//           };
+//         }),
+//         amount_details: {
+//           amount: req.body.amount_details.amount,
+//           currency: req.body.amount_details.currency,
+//           frequency: req.body.amount_details.frequency,
+//         },
+//       });
+
+//       await rent.save();
+
+//       // Update User Posts Array
+//       user.posts.push({ post_id: rent._id });
+//       await user.save();
+
+//       return res.json({ post: formatPostRes(rent), posts: user.posts.map((item) => item.post_id) });
+//     } else if (req.body.type === "exchange") {
+//       const exchange = new Exchange({
+//         uid: req.uid,
+//         description: req.body.description,
+//         contact_details: {
+//           contact_types: {
+//             phone: req.body.contact_details.contact_types.phone,
+//             whatsapp: req.body.contact_details.contact_types.whatsapp,
+//           },
+//           contact: {
+//             code: req.body.contact_details.contact.code,
+//             phone: req.body.contact_details.contact.phone,
+//           },
+//         },
+//         property_details: req.body.property_details.map((item) => {
+//           return {
+//             address: {
+//               province: item.address.province,
+//               municipality: item.address.municipality,
+//             },
+//             features: {
+//               bed_room: item.features.bed_room,
+//               bath_room: item.features.bath_room,
+//               garage: item.features.garage,
+//               garden: item.features.garden,
+//               pool: item.features.pool,
+//               furnished: item.features.furnished,
+//             },
+//           };
+//         }),
+//         offer_details: {
+//           offers: req.body.offer_details.offers,
+//           needs: {
+//             enable: req.body.offer_details.needs.enable,
+//             count: req.body.offer_details.needs.count,
+//           },
+//         },
+//       });
+
+//       await exchange.save();
+
+//       // Update User Posts Array
+//       user.posts.push({ post_id: exchange._id });
+//       await user.save();
+
+//       return res.json({
+//         post: formatPostRes(exchange),
+//         posts: user.posts.map((item) => item.post_id),
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ error: "Server error" });
+//   }
+// };
+
 export const insertPost = async (req, res) => {
   try {
     const user = await User.findById(req.uid);
@@ -111,6 +260,7 @@ export const insertPost = async (req, res) => {
     if (req.body.type === "sale") {
       const sale = new Sale({
         uid: req.uid,
+        images: [],
         description: req.body.description,
         contact_details: {
           contact_types: {
@@ -144,6 +294,14 @@ export const insertPost = async (req, res) => {
         },
       });
 
+      await sale.save();
+
+      // Renaming Images
+      const postId = sale._id;
+      const images = req.file.map((item, index) => {
+        return saveImage(item, index, postId);
+      });
+      sale.images = images;
       await sale.save();
 
       // Update User Posts Array
@@ -190,6 +348,14 @@ export const insertPost = async (req, res) => {
 
       await rent.save();
 
+      // Renaming Images
+      const postId = rent._id;
+      const images = req.file.map((item, index) => {
+        return saveImage(item, index, postId);
+      });
+      rent.images = images;
+      await rent.save();
+
       // Update User Posts Array
       user.posts.push({ post_id: rent._id });
       await user.save();
@@ -234,6 +400,14 @@ export const insertPost = async (req, res) => {
         },
       });
 
+      await exchange.save();
+
+      // Renaming Images
+      const postId = exchange._id;
+      const images = req.file.map((item, index) => {
+        return saveImage(item, index, postId);
+      });
+      exchange.images = images;
       await exchange.save();
 
       // Update User Posts Array
