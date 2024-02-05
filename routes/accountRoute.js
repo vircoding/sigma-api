@@ -34,10 +34,9 @@ router.get("/favorites", requireToken, getFavorites); // Get Favorites
 // POST
 router.post(
   "/posts",
-  requireToken,
-  /*requireToken, */
   uploads.array("images", 10),
   parsePostReq,
+  requireToken,
   postValidator,
   insertPost
 );
