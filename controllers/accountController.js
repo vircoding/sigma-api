@@ -150,7 +150,7 @@ export const insertPost = async (req, res) => {
       // Renaming Images
       const postId = sale._id;
       const images = req.files.map((item, index) => {
-        return saveImage(item, index, postId);
+        return saveImage(item, index + 1, postId);
       });
       sale.images = images;
       await sale.save();
