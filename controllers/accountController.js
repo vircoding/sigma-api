@@ -298,7 +298,7 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = sale._id;
-      const images = req.file.map((item, index) => {
+      const images = req.files.map((item, index) => {
         return saveImage(item, index, postId);
       });
       sale.images = images;
@@ -350,7 +350,7 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = rent._id;
-      const images = req.file.map((item, index) => {
+      const images = req.files.map((item, index) => {
         return saveImage(item, index, postId);
       });
       rent.images = images;
@@ -404,7 +404,7 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = exchange._id;
-      const images = req.file.map((item, index) => {
+      const images = req.files.map((item, index) => {
         return saveImage(item, index, postId);
       });
       exchange.images = images;

@@ -5,7 +5,5 @@ export const parsePostReq = (req, res, next) => {
       req.body[prop] = data[prop];
     }
   }
-  console.log(req.body);
-  console.log(req.body.type);
   next();
 };
