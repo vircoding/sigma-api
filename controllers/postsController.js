@@ -3,7 +3,7 @@ import { User } from "../models/User.js";
 import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
-import { formatPostRes } from "../utils/formatResponses.js";
+import { formatPostRes, formatPostAndAuthorRes } from "../utils/formatResponses.js";
 
 export const getPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -111,7 +111,11 @@ export const getPost = async (req, res) => {
     const post = await Post.findById(id);
     if (!post) return res.status(404).json({ error: "Post not founded" });
 
-    return res.json(formatPostRes(post));
+    // Loading Author
+    const user = User.findById(post.uid.toString());
+    if (!user) return res.status(404).json({ error: "User not founded" });
+
+    return res.json(formatPostAndAuthorRes(post, user));
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     console.log(error);

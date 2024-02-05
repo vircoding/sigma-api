@@ -3,7 +3,7 @@ import { Post } from "../models/Post.js";
 import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
-import { formatUserRes, formatPostRes } from "../utils/formatResponses.js";
+import { formatUserRes, formatPostAndAuthorRes, formatPostRes } from "../utils/formatResponses.js";
 import { saveImage } from "../utils/saveImage.js";
 
 // Get User
@@ -160,7 +160,7 @@ export const insertPost = async (req, res) => {
       await user.save();
 
       return res.json({
-        post: formatPostRes(sale, user),
+        post: formatPostAndAuthorRes(sale, user, user),
         posts: user.posts.map((item) => item.post_id),
       });
     } else if (req.body.type === "rent") {
@@ -215,7 +215,7 @@ export const insertPost = async (req, res) => {
       await user.save();
 
       return res.json({
-        post: formatPostRes(rent, user),
+        post: formatPostAndAuthorRes(rent, user, user),
         posts: user.posts.map((item) => item.post_id),
       });
     } else if (req.body.type === "exchange") {
@@ -272,7 +272,7 @@ export const insertPost = async (req, res) => {
       await user.save();
 
       return res.json({
-        post: formatPostRes(exchange, user),
+        post: formatPostAndAuthorRes(exch, userange, user),
         posts: user.posts.map((item) => item.post_id),
       });
     }
