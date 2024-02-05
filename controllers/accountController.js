@@ -407,17 +407,6 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = exchange._id;
-      fs.mkdir(
-        `https://sigma-api-ehki.onrender.com/uploads/${postId}`,
-        { recursive: true },
-        (error) => {
-          if (error) {
-            console.log("Error al crear la carpeta");
-          } else {
-            console.log("Carpeta creada correctamente");
-          }
-        }
-      );
       const images = req.files.map((item, index) => {
         return saveImage(item, index, postId);
       });
