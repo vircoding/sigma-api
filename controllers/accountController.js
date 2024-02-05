@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import { User } from "../models/User.js";
 import { Post } from "../models/Post.js";
 import { Sale } from "../models/Sale.js";
@@ -299,7 +298,6 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = sale._id;
-      fs.mkdir(`https://sigma-api-ehki.onrender.com/uploads/${postId}`, { recursive: true });
       const images = req.files.map((item, index) => {
         return saveImage(item, index, postId);
       });
@@ -352,7 +350,6 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = rent._id;
-      fs.mkdir(`https://sigma-api-ehki.onrender.com/uploads/${postId}`, { recursive: true });
       const images = req.files.map((item, index) => {
         return saveImage(item, index, postId);
       });
