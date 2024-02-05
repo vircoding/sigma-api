@@ -87,8 +87,6 @@ export const formatPostRes = (post) => {
     };
   }
 
-  console.log(response);
-
   return response;
 };
 
