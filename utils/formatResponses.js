@@ -67,6 +67,34 @@ export const formatPostRes = (post) => {
     };
   });
 
+  // Adding Author Data
+  if (user.__t === "agent") {
+    response.author = {
+      type: "agent",
+      id: user._id,
+      info: {
+        firstname: user.info.firstname,
+        lastname: user.info.lastname,
+        bio: user.info.bio,
+      },
+      contact_details: {
+        public_email: user.contact_details.public_email,
+        whatsapp: {
+          code: user.contact_details.whatsapp.code,
+          phone: user.contact_details.whatsapp.phone,
+        },
+      },
+    };
+  } else if (user.__t === "client") {
+    response.author = {
+      type: "client",
+      id: user._id,
+      info: {
+        username: user.info.username,
+      },
+    };
+  }
+
   if (post.__t === "sale") {
     response.amount_details = {
       amount: post.amount_details.amount,
