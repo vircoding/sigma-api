@@ -38,6 +38,7 @@ export const formatPostRes = (post) => {
   response.type = post.__t;
   response.uid = post.uid;
   response.id = post._id;
+  response.images = post.images;
   response.description = post.description;
   response.contact_details = {
     contact_types: {
