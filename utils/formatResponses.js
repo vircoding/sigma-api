@@ -32,7 +32,7 @@ export const formatUserRes = (user) => {
   return response;
 };
 
-export const formatPostRes = (post) => {
+export const formatPostRes = (post, user) => {
   const response = {};
 
   response.type = post.__t;
