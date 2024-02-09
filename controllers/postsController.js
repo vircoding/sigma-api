@@ -3,7 +3,7 @@ import { User } from "../models/User.js";
 import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
-import { formatPostRes, formatPostAndAuthorRes } from "../utils/formatResponses.js";
+import { formatPostRes } from "../utils/formatResponses.js";
 
 export const getPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;

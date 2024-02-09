@@ -8,6 +8,10 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
+  author_type: {
+    type: String,
+    required: true,
+  },
   images: {
     type: [String],
     required: true,
