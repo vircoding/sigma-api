@@ -8,7 +8,7 @@ const postSchema = new Schema({
     ref: "User",
     required: true,
   },
-  author_type: {
+  author_role: {
     type: String,
     enum: ["agent", "client"],
     required: true,
