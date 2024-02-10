@@ -312,59 +312,59 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// export const updatePost = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const post = await Post.findById(id);
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
 
-//     if (!post) return res.status(404).json({ error: "Post not founded" });
-//     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
+    if (!post) return res.status(404).json({ error: "Post not founded" });
+    if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
 
-//     if (post.__t !== req.body.type) return res.status(400).json({ error: "Types don't match" });
+    if (post.__t !== req.body.type) return res.status(400).json({ error: "Types don't match" });
 
-//     post.description = req.body.description;
-//     post.contact_details.contact_types.phone = req.body.contact_details.contact_types.phone;
-//     post.contact_details.contact_types.whatsapp = req.body.contact_details.contact_types.whatsapp;
-//     post.contact_details.contact.code = req.body.contact_details.contact.code;
-//     post.property_details = req.body.property_details.map((item) => {
-//       return {
-//         address: {
-//           province: item.address.province,
-//           municipality: item.address.municipality,
-//         },
-//         features: {
-//           bed_room: item.features.bed_room,
-//           bath_room: item.features.bath_room,
-//           garage: item.features.garage,
-//           garden: item.features.garden,
-//           pool: item.features.pool,
-//           furnished: item.features.furnished,
-//         },
-//       };
-//     });
+    post.description = req.body.description;
+    post.contact_details.contact_types.phone = req.body.contact_details.contact_types.phone;
+    post.contact_details.contact_types.whatsapp = req.body.contact_details.contact_types.whatsapp;
+    post.contact_details.contact.code = req.body.contact_details.contact.code;
+    post.property_details = req.body.property_details.map((item) => {
+      return {
+        address: {
+          province: item.address.province,
+          municipality: item.address.municipality,
+        },
+        features: {
+          bed_room: item.features.bed_room,
+          bath_room: item.features.bath_room,
+          garage: item.features.garage,
+          garden: item.features.garden,
+          pool: item.features.pool,
+          furnished: item.features.furnished,
+        },
+      };
+    });
 
-//     if (post.__t === "sale") {
-//       post.amount_details.amount = req.body.amount_details.amount;
-//       post.amount_details.currency = req.body.amount_details.currency;
-//     } else if (post.__t === "rent") {
-//       post.amount_details.amount = req.body.amount_details.amount;
-//       post.amount_details.currency = req.body.amount_details.currency;
-//       post.amount_details.frequency = req.body.amount_details.frequency;
-//     } else if (post.__t === "exchange") {
-//       post.offer_details.offers = req.body.offer_details.offers;
-//       post.offer_details.needs.enable = req.body.offer_details.needs.enable;
-//       post.offer_details.needs.count = req.body.offer_details.needs.count;
-//     }
+    if (post.__t === "sale") {
+      post.amount_details.amount = req.body.amount_details.amount;
+      post.amount_details.currency = req.body.amount_details.currency;
+    } else if (post.__t === "rent") {
+      post.amount_details.amount = req.body.amount_details.amount;
+      post.amount_details.currency = req.body.amount_details.currency;
+      post.amount_details.frequency = req.body.amount_details.frequency;
+    } else if (post.__t === "exchange") {
+      post.offer_details.offers = req.body.offer_details.offers;
+      post.offer_details.needs.enable = req.body.offer_details.needs.enable;
+      post.offer_details.needs.count = req.body.offer_details.needs.count;
+    }
 
-//     await post.save();
+    await post.save();
 
-//     return res.json(formatPostRes(post));
-//   } catch (error) {
-//     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
-//     console.log(error);
-//     return res.status(500).json({ error: "Server error" });
-//   }
-// };
+    return res.json(formatPostRes(post));
+  } catch (error) {
+    if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 
 export const addFavorite = async (req, res) => {
   try {

@@ -10,6 +10,7 @@ const postSchema = new Schema({
   },
   author_type: {
     type: String,
+    enum: ["agent", "client"],
     required: true,
   },
   images: {

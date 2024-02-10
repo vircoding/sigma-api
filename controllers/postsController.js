@@ -6,8 +6,8 @@ import { Exchange } from "../models/Exchange.js";
 import { formatPostRes } from "../utils/formatResponses.js";
 
 export const getPosts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
 
   try {
     const posts = await Post.find()
@@ -34,10 +34,31 @@ export const getSales = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
+  const query = {};
+
+  if (req.query.currency) query["amount_details.currency"] = req.query.currency;
+
+  if (req.query.province) query["property_details.address.province"] = req.query.province;
+
+  if (req.query.municipality)
+    query["property_details.address.municipality"] = req.query.municipality;
+
   try {
-    const sales = await Sale.find()
-      .skip((page - 1) * limit)
-      .limit();
+    // const sales = await Sale.find()
+    //   .skip((page - 1) * limit)
+    //   .limit();
+
+    const sales = await Sale.find(query);
+
+    // if(req.query.currency === 'usd' || req.query.currency === 'cup') {
+    //   sales = sales.where('amount_details.currency').equals(req.query.currency)
+    // }
+
+    // if(req.query.amount_gt >= 1 && req.query.amount_gt <= 999999998) {
+    //   sales = sales.where('amount_details').gt(req.query.amount_gt)
+    // }
+
+    // if(req.query.amount_gt)
 
     const total_sales = await Sale.find().countDocuments();
 
