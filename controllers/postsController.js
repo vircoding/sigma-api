@@ -136,7 +136,7 @@ export const getPost = async (req, res) => {
     const user = User.findById(post.uid.toString());
     if (!user) return res.status(404).json({ error: "User not founded" });
 
-    return res.json(formatPostAndAuthorRes(post, user));
+    return res.json(formatPostRes(post));
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
     console.log(error);
