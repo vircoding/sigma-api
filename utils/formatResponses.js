@@ -38,7 +38,7 @@ export const formatPostRes = (post) => {
   response.type = post.__t;
   response.id = post._id;
   response.uid = post.uid;
-  response.author_type = post.author_type;
+  response.author_role = post.author_role;
   response.images = post.images;
   response.description = post.description;
   response.contact_details = {
