@@ -36,31 +36,34 @@ export const getSales = async (req, res) => {
 
   const query = {};
 
+  // Province
+  if (req.query.province)
+    query["property_details.address.province"] = decodeURIComponent(req.query.province);
+
+  // Municipality
+  if (req.query.municipality)
+    query["property_details.address.municipality"] = decodeURIComponent(req.query.municipality);
+
+  // Currency
   if (req.query.currency) query["amount_details.currency"] = req.query.currency;
 
-  if (req.query.province) query["property_details.address.province"] = req.query.province;
+  // Amount Range: Inf. Limit
+  if (req.query.infl && !isNaN(req.query.infl))
+    query["amount_details.amount"] = { $gte: parseInt(req.query.infl) };
 
-  if (req.query.municipality)
-    query["property_details.address.municipality"] = req.query.municipality;
+  // Amount Range: Sup. Limit
+  if (req.query.supl && !isNaN(req.query.supl))
+    query["amount_details.amount"] = {
+      ...query["amount_details.amount"],
+      $lte: parseInt(req.query.supl),
+    };
 
   try {
-    // const sales = await Sale.find()
-    //   .skip((page - 1) * limit)
-    //   .limit();
+    const sales = await Sale.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-    const sales = await Sale.find(query);
-
-    // if(req.query.currency === 'usd' || req.query.currency === 'cup') {
-    //   sales = sales.where('amount_details.currency').equals(req.query.currency)
-    // }
-
-    // if(req.query.amount_gt >= 1 && req.query.amount_gt <= 999999998) {
-    //   sales = sales.where('amount_details').gt(req.query.amount_gt)
-    // }
-
-    // if(req.query.amount_gt)
-
-    const total_sales = await Sale.find().countDocuments();
+    const total_sales = await Sale.find(query).countDocuments();
 
     return res.json({
       sales: sales.map((item) => {
@@ -80,12 +83,39 @@ export const getRents = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
-  try {
-    const rents = await Rent.find()
-      .skip((page - 1) * limit)
-      .limit();
+  const query = {};
 
-    const total_rents = await Rent.find().countDocuments();
+  // Province
+  if (req.query.province)
+    query["property_details.address.province"] = decodeURIComponent(req.query.province);
+
+  // Municipality
+  if (req.query.municipality)
+    query["property_details.address.municipality"] = decodeURIComponent(req.query.municipality);
+
+  // Currency
+  if (req.query.currency) query["amount_details.currency"] = req.query.currency;
+
+  // Frecuency
+  if (req.query.frequency) query["amount_details.frequency"] = req.query.frequency;
+
+  // Amount Range: Inf. Limit
+  if (req.query.infl && !isNaN(req.query.infl))
+    query["amount_details.amount"] = { $gte: parseInt(req.query.infl) };
+
+  // Amount Range: Sup. Limit
+  if (req.query.supl && !isNaN(req.query.supl))
+    query["amount_details.amount"] = {
+      ...query["amount_details.amount"],
+      $lte: parseInt(req.query.supl),
+    };
+
+  try {
+    const rents = await Rent.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total_rents = await Rent.find(query).countDocuments();
 
     return res.json({
       rents: rents.map((item) => {
@@ -105,12 +135,22 @@ export const getExchanges = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
 
-  try {
-    const exchanges = await Exchange.find()
-      .skip((page - 1) * limit)
-      .limit();
+  const query = {};
 
-    const total_exchanges = await Exchange.find().countDocuments();
+  // Province
+  if (req.query.province)
+    query["property_details.address.province"] = decodeURIComponent(req.query.province);
+
+  // Municipality
+  if (req.query.municipality)
+    query["property_details.address.municipality"] = decodeURIComponent(req.query.municipality);
+
+  try {
+    const exchanges = await Exchange.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total_exchanges = await Exchange.find(query).countDocuments();
 
     return res.json({
       exchanges: exchanges.map((item) => {

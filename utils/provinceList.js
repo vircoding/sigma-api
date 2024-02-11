@@ -1,5 +1,5 @@
 export const provinceList = [
-  "Pinar del Rio",
+  "Pinar del Río",
   "Artemisa",
   "La Habana",
   "Mayabeque",
@@ -18,7 +18,7 @@ export const provinceList = [
 ];
 
 export const municipalityDict = {
-  "Pinar del Rio": [
+  "Pinar del Río": [
     "Sandino",
     "Mantua",
     "Minas de Matahambre",
