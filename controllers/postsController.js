@@ -66,11 +66,11 @@ export const getSales = async (req, res) => {
     const total_sales = await Sale.find(query).countDocuments();
 
     return res.json({
-      sales: sales.map((item) => {
+      posts: sales.map((item) => {
         return formatPostRes(item);
       }),
       page: total_sales === 0 ? 0 : page,
-      total_sales,
+      total_posts: total_sales,
       total_pages: Math.ceil(total_sales / limit),
     });
   } catch (error) {
@@ -118,11 +118,11 @@ export const getRents = async (req, res) => {
     const total_rents = await Rent.find(query).countDocuments();
 
     return res.json({
-      rents: rents.map((item) => {
+      posts: rents.map((item) => {
         return formatPostRes(item);
       }),
       page: total_rents === 0 ? 0 : page,
-      total_rents,
+      total_posts: total_rents,
       total_pages: Math.ceil(total_rents / limit),
     });
   } catch (error) {
@@ -153,11 +153,11 @@ export const getExchanges = async (req, res) => {
     const total_exchanges = await Exchange.find(query).countDocuments();
 
     return res.json({
-      exchanges: exchanges.map((item) => {
+      posts: exchanges.map((item) => {
         return formatPostRes(item);
       }),
       page: total_exchanges === 0 ? 0 : page,
-      total_exchanges,
+      total_posts: total_exchanges,
       total_pages: Math.ceil(total_exchanges / limit),
     });
   } catch (error) {
