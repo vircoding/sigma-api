@@ -15,6 +15,7 @@ export const formatUserRes = (user) => {
   if (user.__t === "client") {
     response.info = { username: user.info.username };
   } else if (user.__t === "agent") {
+    response.avatar = user.avatar;
     response.info = {
       firstname: user.info.firstname,
       lastname: user.info.lastname,

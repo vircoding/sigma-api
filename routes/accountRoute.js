@@ -19,10 +19,9 @@ import {
   paramValidator,
 } from "../middlewares/requestValidator.js";
 import { parsePostReq } from "../middlewares/parseReq.js";
-import { saveImage } from "../utils/saveImage.js";
 
 const router = Router();
-const uploads = multer({ dest: "uploads/" });
+const imagesUploads = multer({ dest: "uploads/images/" });
 
 // GET
 router.get("/", requireToken, getUser); // Get User
@@ -34,7 +33,7 @@ router.get("/favorites", requireToken, getFavorites); // Get Favorites
 // POST
 router.post(
   "/posts",
-  uploads.array("images", 10),
+  imagesUploads.array("images", 10),
   parsePostReq,
   requireToken,
   postValidator,

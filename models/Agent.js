@@ -4,6 +4,10 @@ import { User } from "../models/User.js";
 export const Agent = User.discriminator(
   "agent",
   new mongoose.Schema({
+    avatar: {
+      type: String,
+      required: true,
+    },
     info: {
       type: {
         firstname: {
