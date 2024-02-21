@@ -112,7 +112,11 @@ export const insertPost = async (req, res) => {
       const sale = new Sale({
         uid: req.uid,
         author_role: user.__t,
-        images: [],
+        images: [
+          process.env.mode === "developer"
+            ? "http://localhost:5000/standard-image.jpg"
+            : "https://sigmacuba.com/standard-image.jpg",
+        ],
         description: req.body.description,
         contact_details: {
           contact_types: {

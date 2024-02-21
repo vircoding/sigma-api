@@ -21,7 +21,7 @@ import {
 import { parsePostReq } from "../middlewares/parseReq.js";
 
 const router = Router();
-const imagesUploads = multer({ dest: "uploads/images/" });
+const imagesUploads = multer({ dest: "dist/uploads/images/" });
 
 // GET
 router.get("/", requireToken, getUser); // Get User

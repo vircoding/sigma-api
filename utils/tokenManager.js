@@ -20,7 +20,7 @@ export const generateRefreshToken = (uid, res) => {
       sameSite: "none",
       secure: !(process.env.MODE === "developer"),
       expires: new Date(Date.now() + expiresIn * 1000),
-      domain: "sigma-api-ehki.onrender.com",
+      domain: process.env.MODE === "developer" ? "localhost:5000" : "sigmacuba.com",
       path: "/",
     });
   } catch (error) {

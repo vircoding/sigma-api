@@ -105,7 +105,10 @@ export const register = async (req, res) => {
       return res.json(response);
     } else if (req.body.role === "agent") {
       const agent = new Agent({
-        avatar: "https://sigmacuba.com/standard-avatar.jpg",
+        avatar:
+          process.env.MODE === "developer"
+            ? "http://localhost:5000/standard-avatar.jpg"
+            : "https://sigmacuba.com/standard-avatar.jpg",
         email: req.body.email,
         password: req.body.password,
         info: {

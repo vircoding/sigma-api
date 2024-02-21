@@ -96,6 +96,7 @@ export const formatPostRes = (post) => {
 export const formatAgentRes = (agent) => {
   return {
     id: agent._id,
+    avatar: agent.avatar,
     info: {
       firstname: agent.info.firstname,
       lastname: agent.info.lastname,

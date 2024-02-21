@@ -6,7 +6,7 @@ import { refresh, logout, login, register } from "../controllers/authController.
 import { parsePostReq } from "../middlewares/parseReq.js";
 
 const router = Router();
-const avatarUploads = multer({ dest: "uploads/avatars/" });
+const avatarUploads = multer({ dest: "dist/uploads/avatars/" });
 
 // GET
 router.get("/", requireRefreshToken, refresh); // Refresh
