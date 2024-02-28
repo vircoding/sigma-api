@@ -46,4 +46,8 @@ app.get("*", (req, res) => {
 
 // Starting Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Sigma Beta (Production) started at Port: ${PORT}`));
+if (process.env.MODE === "production") {
+  app.listen(PORT, () => console.log(`Sigma Beta (Production) started at Port: ${PORT}`));
+} else if (process.env.MODE === "development") {
+  app.listen(PORT, () => console.log(`Sigma Beta (Development) started at Port: ${PORT}`));
+}

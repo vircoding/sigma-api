@@ -15,14 +15,27 @@ export const generateRefreshToken = (uid, res) => {
   const expiresIn = 60 * 60 * 24 * 31; // 31 Days
   try {
     const refreshToken = jwt.sign({ uid }, process.env.JWT_REFRESH, { expiresIn });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: !(process.env.MODE === "developer"),
-      expires: new Date(Date.now() + expiresIn * 1000),
-      domain: process.env.MODE === "developer" ? "localhost:5000" : "sigmacuba.com",
-      path: "/",
-    });
+    if (process.env.MODE === "development") {
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        // secure: !(process.env.MODE === "development"),
+        secure: true,
+        expires: new Date(Date.now() + expiresIn * 1000),
+        domain: "localhost:5000",
+        path: "/",
+      });
+    } else if (process.env.MODE === "production") {
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        // secure: !(process.env.MODE === "development"),
+        secure: true,
+        expires: new Date(Date.now() + expiresIn * 1000),
+        domain: "sigmacuba.com",
+        path: "/",
+      });
+    }
   } catch (error) {
     console.log(error);
   }

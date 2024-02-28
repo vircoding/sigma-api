@@ -3,7 +3,7 @@ import { Client } from "../models/Client.js";
 import { Agent } from "../models/Agent.js";
 import { generateToken, generateRefreshToken } from "../utils/tokenManager.js";
 import { formatUserRes } from "../utils/formatResponses.js";
-import { saveAvatar } from "../utils/saveImage.js";
+import { saveAvatar, getStandardAvatarUrl } from "../utils/saveImage.js";
 
 // Refresh
 export const refresh = (req, res) => {
@@ -105,10 +105,7 @@ export const register = async (req, res) => {
       return res.json(response);
     } else if (req.body.role === "agent") {
       const agent = new Agent({
-        avatar:
-          process.env.MODE === "developer"
-            ? "http://localhost:5000/standard-avatar.jpg"
-            : "https://sigmacuba.com/standard-avatar.jpg",
+        avatar: getStandardAvatarUrl(),
         email: req.body.email,
         password: req.body.password,
         info: {

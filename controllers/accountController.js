@@ -4,7 +4,7 @@ import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
 import { formatUserRes, formatPostRes } from "../utils/formatResponses.js";
-import { saveImage } from "../utils/saveImage.js";
+import { saveImage, getStandardImageUrl } from "../utils/saveImage.js";
 
 // Get User
 export const getUser = async (req, res) => {
@@ -112,11 +112,7 @@ export const insertPost = async (req, res) => {
       const sale = new Sale({
         uid: req.uid,
         author_role: user.__t,
-        images: [
-          process.env.mode === "developer"
-            ? "http://localhost:5000/standard-image.jpg"
-            : "https://sigmacuba.com/standard-image.jpg",
-        ],
+        images: [getStandardImageUrl()],
         description: req.body.description,
         contact_details: {
           contact_types: {
