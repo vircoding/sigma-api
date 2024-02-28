@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
 export const saveImage = (file, nameIndex, postId) => {
-  const newPath = `./dist/uploads/images/${postId}-image_${nameIndex}.jpg`;
+  const newPath = `./dist/uploads/images/${postId}-image-${nameIndex}.jpg`;
   fs.renameSync(file.path, newPath);
 
   if (process.env.MODE === "development") {

@@ -18,17 +18,17 @@ export const generateRefreshToken = (uid, res) => {
     if (process.env.MODE === "development") {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "strict",
         // secure: !(process.env.MODE === "development"),
-        secure: true,
+        secure: false,
         expires: new Date(Date.now() + expiresIn * 1000),
-        domain: "localhost:5000",
+        domain: "localhost",
         path: "/",
       });
     } else if (process.env.MODE === "production") {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "strict",
         // secure: !(process.env.MODE === "development"),
         secure: true,
         expires: new Date(Date.now() + expiresIn * 1000),

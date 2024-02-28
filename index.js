@@ -26,6 +26,7 @@ app.use(
       if (origin === process.env.ORIGIN) {
         return callback(null, true);
       } else {
+        console.log(origin);
         return callback("CORS Error: Origin Not Allowed");
       }
     },
