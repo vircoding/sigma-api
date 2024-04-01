@@ -4,7 +4,7 @@ import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
 import { formatUserRes, formatPostRes } from "../utils/formatResponses.js";
-import { saveImage, getStandardImageUrl } from "../utils/saveImage.js";
+import { saveImage, updateAvatar, getStandardImageUrl } from "../utils/saveImage.js";
 
 // Get User
 export const getUser = async (req, res) => {
@@ -301,6 +301,11 @@ export const updateUser = async (req, res) => {
       user.contact_details.public_email = req.body.contact_details.public_email;
       user.contact_details.whatsapp.code = req.body.contact_details.whatsapp.code;
       user.contact_details.whatsapp.phone = req.body.contact_details.whatsapp.phone;
+
+      if (req.file) {
+        const avatar = updateAvatar(req.file, req.uid);
+        user.avatar = avatar;
+      }
     }
 
     await user.save();

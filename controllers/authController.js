@@ -141,7 +141,7 @@ export const register = async (req, res) => {
 
       // Renaming Avatar
       const uid = agent._id;
-      const avatar = saveAvatar(req.file, uid);
+      const avatar = updateAvatar(req.file, uid);
       agent.avatar = avatar;
       await agent.save();
 

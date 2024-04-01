@@ -22,6 +22,7 @@ import { parsePostReq } from "../middlewares/parseReq.js";
 
 const router = Router();
 const imagesUploads = multer({ dest: "dist/uploads/images/" });
+const avatarUploads = multer({ dest: "dist/uploads/avatars/" });
 
 // GET
 router.get("/", requireToken, getUser); // Get User
@@ -49,7 +50,14 @@ router.post(
 // });
 
 // PATCH
-router.patch("/", requireToken, updateUserValidator, updateUser); // Update User
+router.patch(
+  "/",
+  avatarUploads.single("avatar"),
+  parsePostReq,
+  requireToken,
+  updateUserValidator,
+  updateUser
+); // Update User
 router.patch("/posts/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
 
 // PUT

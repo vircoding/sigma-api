@@ -22,6 +22,18 @@ export const saveAvatar = (file, uid) => {
   }
 };
 
+export const updateAvatar = (file, uid) => {
+  const path = `./dist/uploads/avatars/${uid}-avatar.jpg`;
+  fs.renameSync(path, `./dist/uploads/avatars/${uid}-old-avatar.jpg`);
+  fs.renameSync(file.path, path);
+
+  if (process.env.MODE === "development") {
+    return `http://localhost:5000/uploads/avatars/${uid}-avatar.jpg`;
+  } else if (process.env.MODE === "production") {
+    return `https://sigmacuba.com/uploads/avatars/${uid}-avatar.jpg`;
+  }
+};
+
 export const getStandardImageUrl = () => {
   if (process.env.MODE === "development") {
     return "http://localhost:5000/standard-image.jpg";
