@@ -4,7 +4,7 @@ import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
 import { formatUserRes, formatPostRes } from "../utils/formatResponses.js";
-import { saveImage, updateAvatar, getStandardImageUrl } from "../utils/saveImage.js";
+import { saveImage, removeImage, updateAvatar, getStandardImageUrl } from "../utils/saveImage.js";
 
 // Get User
 export const getUser = async (req, res) => {
@@ -150,8 +150,8 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = sale._id;
-      const images = req.files.map((item, index) => {
-        return saveImage(item, index + 1, postId);
+      const images = req.files.map((item) => {
+        return saveImage(item, postId);
       });
       sale.images = images;
       await sale.save();
@@ -206,8 +206,8 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = rent._id;
-      const images = req.files.map((item, index) => {
-        return saveImage(item, index, postId);
+      const images = req.files.map((item) => {
+        return saveImage(item, postId);
       });
       rent.images = images;
       await rent.save();
@@ -264,8 +264,8 @@ export const insertPost = async (req, res) => {
 
       // Renaming Images
       const postId = exchange._id;
-      const images = req.files.map((item, index) => {
-        return saveImage(item, index, postId);
+      const images = req.files.map((item) => {
+        return saveImage(item, postId);
       });
       exchange.images = images;
       await exchange.save();
@@ -324,10 +324,12 @@ export const updatePost = async (req, res) => {
     if (!post) return res.status(404).json({ error: "Post not founded" });
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
     if (post.__t !== req.body.type) return res.status(400).json({ error: "Types don't match" });
+
     post.description = req.body.description;
     post.contact_details.contact_types.phone = req.body.contact_details.contact_types.phone;
     post.contact_details.contact_types.whatsapp = req.body.contact_details.contact_types.whatsapp;
     post.contact_details.contact.code = req.body.contact_details.contact.code;
+    post.contact_details.contact.phone = req.body.contact_details.contact.phone;
     post.property_details = req.body.property_details.map((item) => {
       return {
         address: {
@@ -356,10 +358,40 @@ export const updatePost = async (req, res) => {
       post.offer_details.needs.enable = req.body.offer_details.needs.enable;
       post.offer_details.needs.count = req.body.offer_details.needs.count;
     }
-    if (req.files) {
-      console.log("Not Empty");
+
+    const newImagesCount = post.images.length + req.files.length - req.body.removed_images.length;
+    if (newImagesCount > 0 && newImagesCount <= 10) {
+      const imageList = post.images;
+      req.body.removed_images.forEach((item) => {
+        const filename = imageList[item].replace(
+          process.env.MODE === "development"
+            ? `http://localhost:5000/uploads/images/`
+            : `https://sigmacuba.com/uploads/images/`,
+          ""
+        );
+        const result = removeImage(filename);
+        if (result) {
+          post.images = post.images.filter(
+            (item) =>
+              item.replace(
+                process.env.MODE === "development"
+                  ? `http://localhost:5000/uploads/images/`
+                  : `https://sigmacuba.com/uploads/images/`,
+                ""
+              ) !== filename
+          );
+        }
+      });
     }
+
+    // Pushing Images
+    const postId = post._id;
+    req.files.forEach((item) => {
+      post.images.push(saveImage(item, postId));
+    });
+
     await post.save();
+
     return res.json(formatPostRes(post));
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
