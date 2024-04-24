@@ -6,6 +6,14 @@ import { provinceList, municipalityDict } from "./provinceList.js";
 const codeRegex = /^\+\d{1,3}$/;
 
 // Custom Validators
+const validateRemovedImages = (value, { req }) => {
+  req.body.removed_images.forEach((item, index) => {
+    if (req.body.removed_images.indexOf(item) !== index) throw new Error("Duplicates");
+  });
+
+  return value;
+};
+
 const validateRepassword = (value, { req }) => {
   if (value !== req.body.password) throw new Error("Passwords doesn't match");
 
@@ -50,6 +58,24 @@ const validateNeedsCount = (value, { req }) => {
 };
 
 // Validation Schemas
+export const removedSchema = checkSchema(
+  {
+    removed_images: {
+      exists: { bail: true, errorMessage: "Must Exists" },
+      isArray: { bail: true, errorMessage: "Must be an array" },
+      custom: { options: validateRemovedImages, errorMessage: "Invalid value from custom" },
+    },
+    "removed_images.*": {
+      isInt: {
+        options: { min: 0, max: 9 },
+        bail: true,
+        errorMessage: "Must be an int between 0-9",
+      },
+    },
+  },
+  ["body"]
+);
+
 export const loginSchema = checkSchema(
   {
     email: {

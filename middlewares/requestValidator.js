@@ -10,6 +10,7 @@ import {
   saleSchema,
   rentSchema,
   exchangeSchema,
+  removedSchema,
 } from "../utils/valSchemas.js";
 
 export const paramValidator = [
@@ -77,6 +78,12 @@ export const updateUserValidator = async (req, res, next) => {
   }
 
   // Validation Result
+  await valResult(req, res, next);
+};
+
+export const removedImagesValidator = async (req, res, next) => {
+  await removedSchema.run(req);
+
   await valResult(req, res, next);
 };
 

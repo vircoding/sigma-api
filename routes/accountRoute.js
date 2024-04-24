@@ -16,6 +16,7 @@ import {
 import {
   updateUserValidator,
   postValidator,
+  removedImagesValidator,
   paramValidator,
 } from "../middlewares/requestValidator.js";
 import { parsePostReq } from "../middlewares/parseReq.js";
@@ -39,7 +40,7 @@ router.post(
   requireToken,
   postValidator,
   insertPost
-);
+); // Insert Post
 // router.post("/posts", requireToken, postValidator, uploads.single("image"), insertPost); // Insert Post
 // router.post("/posts/images", requireToken, uploads.array("images", 10), (req, res) => {
 //   req.files.map(saveImage);
@@ -58,7 +59,17 @@ router.patch(
   updateUserValidator,
   updateUser
 ); // Update User
-router.patch("/posts/:id", requireToken, paramValidator, postValidator, updatePost); // Update Post
+
+router.patch(
+  "/posts/:id",
+  imagesUploads.array("images", 10),
+  parsePostReq,
+  requireToken,
+  paramValidator,
+  postValidator,
+  removedImagesValidator,
+  updatePost
+); // Update Post
 
 // PUT
 router.put("/favorites/:id", requireToken, paramValidator, addFavorite); // Add To Favorites

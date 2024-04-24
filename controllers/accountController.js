@@ -321,12 +321,9 @@ export const updatePost = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findById(id);
-
     if (!post) return res.status(404).json({ error: "Post not founded" });
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
-
     if (post.__t !== req.body.type) return res.status(400).json({ error: "Types don't match" });
-
     post.description = req.body.description;
     post.contact_details.contact_types.phone = req.body.contact_details.contact_types.phone;
     post.contact_details.contact_types.whatsapp = req.body.contact_details.contact_types.whatsapp;
@@ -347,7 +344,6 @@ export const updatePost = async (req, res) => {
         },
       };
     });
-
     if (post.__t === "sale") {
       post.amount_details.amount = req.body.amount_details.amount;
       post.amount_details.currency = req.body.amount_details.currency;
@@ -360,9 +356,10 @@ export const updatePost = async (req, res) => {
       post.offer_details.needs.enable = req.body.offer_details.needs.enable;
       post.offer_details.needs.count = req.body.offer_details.needs.count;
     }
-
+    if (req.files) {
+      console.log("Not Empty");
+    }
     await post.save();
-
     return res.json(formatPostRes(post));
   } catch (error) {
     if (error.kind === "ObjectId") return res.status(403).json({ error: "non-valid Post ID" });
