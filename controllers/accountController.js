@@ -4,7 +4,14 @@ import { Sale } from "../models/Sale.js";
 import { Rent } from "../models/Rent.js";
 import { Exchange } from "../models/Exchange.js";
 import { formatUserRes, formatPostRes } from "../utils/formatResponses.js";
-import { saveImage, removeImage, updateAvatar, getStandardImageUrl } from "../utils/saveImage.js";
+import {
+  saveImage,
+  removeImage,
+  updateAvatar,
+  getStandardImageUrl,
+  unlinkImage,
+  deleteOldAvatar,
+} from "../utils/saveImage.js";
 
 // Get User
 export const getUser = async (req, res) => {
@@ -286,6 +293,7 @@ export const insertPost = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
+  let removedAvatar = false;
   try {
     const user = await User.findById(req.uid);
     if (!user) return res.status(404).json({ error: "User not founded" });
@@ -305,10 +313,15 @@ export const updateUser = async (req, res) => {
       if (req.file) {
         const avatar = updateAvatar(req.file, req.uid);
         user.avatar = avatar;
+        removedAvatar = true;
       }
     }
 
     await user.save();
+
+    if (removedAvatar) {
+      deleteOldAvatar(user._id);
+    }
 
     res.json(formatUserRes(user));
   } catch (error) {
@@ -360,6 +373,7 @@ export const updatePost = async (req, res) => {
     }
 
     const newImagesCount = post.images.length + req.files.length - req.body.removed_images.length;
+    const unlinkedImages = [];
     if (newImagesCount > 0 && newImagesCount <= 10) {
       const imageList = post.images;
       req.body.removed_images.forEach((item) => {
@@ -380,6 +394,14 @@ export const updatePost = async (req, res) => {
                 ""
               ) !== filename
           );
+          unlinkedImages.push(
+            imageList[item].replace(
+              process.env.MODE === "development"
+                ? `http://localhost:5000/uploads/images/`
+                : `https://sigmacuba.com/uploads/images/`,
+              ""
+            )
+          );
         }
       });
     }
@@ -391,6 +413,11 @@ export const updatePost = async (req, res) => {
     });
 
     await post.save();
+
+    // Unlink Images
+    unlinkedImages.forEach((item) => {
+      unlinkImage(item, true);
+    });
 
     return res.json(formatPostRes(post));
   } catch (error) {
@@ -454,6 +481,18 @@ export const deletePost = async (req, res) => {
     if (!post.uid.equals(req.uid)) return res.status(401).json({ error: "UID doesn't match" });
 
     await post.deleteOne();
+
+    post.images.forEach((item) => {
+      unlinkImage(
+        item.replace(
+          process.env.MODE === "development"
+            ? `http://localhost:5000/uploads/images/`
+            : `https://sigmacuba.com/uploads/images/`,
+          ""
+        ),
+        false
+      );
+    });
 
     await User.updateMany(
       { "favorites.post_id": id },

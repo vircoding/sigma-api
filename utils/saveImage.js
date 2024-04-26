@@ -40,6 +40,14 @@ export const updateAvatar = (file, uid) => {
   }
 };
 
+export const deleteOldAvatar = (uid) => {
+  const path = `./dist/uploads/avatars/${uid}-old-avatar.jpg`;
+
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path);
+  }
+};
+
 export const getStandardImageUrl = () => {
   if (process.env.MODE === "development") {
     return "http://localhost:5000/standard-image.jpg";
@@ -66,4 +74,19 @@ export const removeImage = (filename) => {
   }
 
   return false;
+};
+
+export const unlinkImage = (filename, isOld) => {
+  const folder = `./dist/uploads/images`;
+  let filePath;
+
+  if (isOld) {
+    filePath = path.join(folder, "old-" + filename);
+  } else {
+    filePath = path.join(folder, filename);
+  }
+
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
 };
