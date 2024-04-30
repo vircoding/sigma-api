@@ -40,7 +40,7 @@ export const userValidator = async (req, res, next) => {
   if (typeResult.errors.length > 0) {
     return res.status(400).json({ error: typeResult.errors });
   } else {
-    // General Post Validations
+    // General User Validations
     await userSchema.run(req);
 
     // Validation Switch
@@ -69,7 +69,7 @@ export const updateUserValidator = async (req, res, next) => {
   if (typeResult.errors.length > 0) {
     return res.status(400).json({ error: typeResult.errors });
   } else {
-    // General Post Validations
+    // General User Validations
     await updateUserSchema.run(req);
 
     // Validation Switch

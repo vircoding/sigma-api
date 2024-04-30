@@ -41,14 +41,6 @@ router.post(
   postValidator,
   insertPost
 ); // Insert Post
-// router.post("/posts", requireToken, postValidator, uploads.single("image"), insertPost); // Insert Post
-// router.post("/posts/images", requireToken, uploads.array("images", 10), (req, res) => {
-//   req.files.map(saveImage);
-//   const urls = req.files.map((item) => {
-//     return `https://sigma-api-ehki.onrender.com/uploads/${item.originalname}`;
-//   });
-//   res.json({ urls });
-// });
 
 // PATCH
 router.patch(

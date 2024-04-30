@@ -21,17 +21,34 @@ const validateRepassword = (value, { req }) => {
 };
 
 const validateWhatsappNumber = (value, { req }) => {
-  const parsedNumber = parsePhoneNumber(req.body.contact_details.whatsapp.code + value);
-  if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
+  if (req.body.contact_details.whatsapp.code === "+53") {
+    // Cuba
+    const regex = /^[56].{7}$/;
+    if (!regex.test(value)) throw new Error("Invalid Phone Number");
 
-  return value;
+    return value;
+  } else {
+    // World
+    const parsedNumber = parsePhoneNumber(req.body.contact_details.whatsapp.code + value);
+    if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
+
+    return value;
+  }
 };
 
 const validatePhoneNumber = (value, { req }) => {
-  const parsedNumber = parsePhoneNumber(req.body.contact_details.contact.code + value);
-  if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
+  if (req.body.contact_details.contact.code === "+53") {
+    const regex = /^[56].{7}$/;
+    if (!regex.test(value)) throw new Error("Invalid Phone Number");
 
-  return value;
+    return value;
+  } else {
+    // World
+    const parsedNumber = parsePhoneNumber(req.body.contact_details.contact.code + value);
+    if (!parsedNumber.isValid()) throw new Error("Invalid Phone Number");
+
+    return value;
+  }
 };
 
 const validateMunicipality = (value, { req, path }) => {
